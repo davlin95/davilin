@@ -82,23 +82,26 @@ void commandR(_Bool detail,Statistics *stat){
    printRegCount(stat,detail);
 }
 void commandO(_Bool detail, Statistics *stat){
-   if(detail==1) printf("%s\n",flagOHeader);
    char mipsLine[11]={'\0'};
    while( scanLine(mipsLine)!=NULL){ // Exists Line. Do something.
         flagO(mipsLine,stat);        
    }
+   if(detail==1) printf("%s\n",flagOHeader);
    printOpcodeCount(stat);
    if(detail==1) printf("\n%s",functionHeader);
    printFunctionCount(stat);
 }
 /* Scans line by line, if exists. Else return null. */
-char * scanLine(char mipsLine[]){
+char *scanLine(char mipsLine[]){
    if(fscanf(stdin,"%s",mipsLine)!=EOF){
       // we have a line of mips 
-    //  if(isValidHexadecimal(mipsLine) > 0){
-        // check if is valid
+      if(isValidHexadecimal(mipsLine) > 0){
+        //is valid
         return mipsLine;
-    //  }else exit(EXIT_FAILURE);// error invalid
+     }else{
+       fprintf(stderr,"INVALID INPUT:There is an invalid mips instruction\n");
+       exit(EXIT_FAILURE);// error invalid
+     }
    }else return NULL; // natural end of file
 }
 
@@ -285,16 +288,25 @@ void printFunctionCount(Statistics *stat){
     }   
 
 }
-/*
+
 int isValidHexadecimal(char mipsLine[]){
     if(strlen(mipsLine)!=10)return 0;
     else{
       int i;
       for(i=0;i<10;i++){
-     }
+        char ch = mipsLine[i];
+        int chVal = ch +0;
+        if(chVal<48) return 0;
+        else if((chVal>57)&(chVal<65))return 0;
+        else if((chVal>70)&(chVal<97)){
+          if(chVal!=88)
+             return 0;
+        }
+        else if((chVal>102)&(chVal!=120))return 0;
+      }
     }
-*/
-
+    return 1;
+}
 /*if(mipsLine[0]!='0')return 0;
     else if((mipsLine[1]!='X')|(mipsLine[1]!='x')) return 0;
     else {
