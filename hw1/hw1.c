@@ -24,14 +24,18 @@ int main(int argc, char *argv[]){
      else if (strcmp(command,"-o")==0){
        commandCaller(2,uFlag,&stat);
      }
-     else if(strcmp(command,"-u")==0){
+     else if((strcmp(command,"-u")==0)&(argCount==2)){
        uFlag=1;
      }
-     else{ 
+     else{
+       printHelp(); 
        exit(EXIT_FAILURE);
      }
    }
- }else{exit(EXIT_FAILURE);}
+ }else{
+    printHelp();
+    exit(EXIT_FAILURE);
+  }
  return 0; 
 }
 
@@ -99,7 +103,7 @@ char *scanLine(char mipsLine[]){
         //is valid
         return mipsLine;
      }else{
-       fprintf(stderr,"INVALID INPUT:There is an invalid mips instruction\n");
+       fprintf(stderr,"%s\n",mipsLine);
        exit(EXIT_FAILURE);// error invalid
      }
    }else return NULL; // natural end of file
