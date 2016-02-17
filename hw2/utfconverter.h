@@ -8,7 +8,6 @@
     #include <errno.h>
     #include <fcntl.h>
     #include <stdint.h>
-    #include "utfconverter.h"
 
     /* Constants for validate_args return values. */
     #define VALID_ARGS 0
@@ -23,9 +22,7 @@
 
     /* # of bytes a UTF-16 codepoint takes up */
     #define CODE_UNIT_SIZE 1
-
     #define SURROGATE_PAIR 0x10000
-
     #define SAFE_PARAM 0x0FA47E10
 
     /**
@@ -59,7 +56,7 @@
     /**
      * Print out the program usage string
      */
-    #define USAGE(name) do {                                                                                                \
+    #define USAGE(name)                                                                                                \
         fprintf(stderr,                                                                                                     \
             "\n%s [-h] INPUT_FILE OUTPUT_FILE \n"                                                                           \
             "\n"                                                                                                            \
@@ -80,5 +77,4 @@
             "                               INPUT_FILE the program should exit\n"                                           \
             "                               with the EXIT_FAILURE return code.\n"                                           \
             ,(name)                                                                                                         \
-        );                                                                                                                  \
-    } while(0)
+        );                                                                                                                

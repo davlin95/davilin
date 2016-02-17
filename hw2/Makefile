@@ -1,5 +1,5 @@
 CC = gcc
-CFLAGS = 
+CFLAGS = -Wall -Werror
 BIN = utfconverter
 
 SRC = $(wildcard *.c)
@@ -13,4 +13,6 @@ $(BIN): $(SRC)
 
 clean:
 	rm -f *.o $(BIN)
+
+
 
