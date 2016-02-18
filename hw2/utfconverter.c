@@ -15,7 +15,7 @@ int main(int argc, char **argv)
     char *input_path = NULL;
     char *output_path = NULL;
     /* open output channel */
-    FILE* standardout = fopen("stdout", "w"); /* @todo: fclose() */
+    FILE* standardout = stdout;
     /* Parse short options */
     while((opt = getopt(argc, argv, "h")) != -1) {
         switch(opt) {
@@ -35,7 +35,7 @@ int main(int argc, char **argv)
                 /* A bad option was provided. */
                 USAGE(argv[0]);
                 exit(EXIT_FAILURE);
-                break;
+                
         }
     }
     /* Get position arguments */
@@ -83,6 +83,13 @@ int main(int argc, char **argv)
                              if(success) {
                                /* We got here so it must of worked right? */
                                return_code = EXIT_SUCCESS;
+                               if(input_fd >= 0) { 
+                                 close(input_fd); 
+                               }
+                               if(output_fd >= 0) {
+                                  close(output_fd);
+                               } 
+
                              }
                              else {
                                /* Conversion failed; clean up */
@@ -111,10 +118,10 @@ int main(int argc, char **argv)
         }
     } else {
         /* Alert the user what was not set before quitting. */
-        if((input_path = NULL) == NULL) {
+        if(input_path == NULL) {
             fprintf(standardout, "INPUT_FILE was not set.\n");
         }
-        if((output_path = NULL) == NULL) {
+        if(output_path == NULL) {
             fprintf(standardout, "OUTPUT_FILE was not set.\n");
         }
         /* Print out the program usage*/
@@ -126,9 +133,9 @@ int main(int argc, char **argv)
 int validate_args(const char *input_path, const char *output_path){
     int return_code = FAILED; /* in header file FAILED = 3;*/
     /* number of arguments */
-    int vargs = 2;
+    /*int vargs = 2;*/
     /* create reference */
-    void* pvargs = &vargs; 
+    /*void* pvargs = &vargs;*/ 
     /* Make sure both strings are not NULL */
     if(input_path != NULL && output_path != NULL) {
         /* Check to see if the the input and output are two different files. */
@@ -138,7 +145,7 @@ int validate_args(const char *input_path, const char *output_path){
             /* zero out the memory of one sb plus another */
             memset(&sb, 0, sizeof(sb) + 1);  //@todo Do i need to zero this out?
             /* increment to second argument */
-            pvargs++; /* @todo Seg Fault?*/
+           /* pvargs++;*/ /* @todo Seg Fault?*/
             /* now check to see if the file exists */
             if(stat(input_path, &sb) == -1) {
                 /* something went wrong */
@@ -158,7 +165,7 @@ int validate_args(const char *input_path, const char *output_path){
         }
     }
     /* Be good and free memory */
-    free(pvargs) ; /*@todo pvargs isn't even used. */
+    /*   free(pvargs) ;*/ /*@todo pvargs isn't even used. */
     return return_code;
 }
 
@@ -184,12 +191,13 @@ bool convert(const int input_fd,const int output_fd)
                    (read_value & UTF8_2_BYTE) == UTF8_2_BYTE) { /* 0xC0 */
                     /* Check to see which byte we have encountered */
                     if(count == 0) {
-                        bytes[count++] = read_value;
-                    } else {
+                        bytes[count++] = read_value; /*Don't evaluate, wait for cont. bytes */
+                    } else { 
+                        /* we have lead and continuation bytes. Hit new lead byte, evaluate*/ 
                         /* Set the file position back 1 byte */
                         if(lseek(input_fd, -1, SEEK_CUR) < 0) {
-                        	/*Unsafe action! Increment! */
-                        	safe_param = *(int*)++saftey_ptr;
+                            /*Unsafe action! Increment! */
+                            safe_param = *(int*)++saftey_ptr;
                             /* failed to move the file pointer back */
                             perror("NULL");
                             goto conversion_done;
@@ -198,12 +206,12 @@ bool convert(const int input_fd,const int output_fd)
                         encode = true;
                     }
                 } else if((read_value & UTF8_CONT) == UTF8_CONT) {
-                    /* continuation byte */
+                    /* Add the continuation byte, pending evaluation and encoding */
                     bytes[count++] = read_value;
                 }
             } else { /* if MSB doesn't start with a 1*/
                 if(count == 0) {
-                    /* US-ASCII */
+                    /* We have a new US-ASCII : Evaluate*/
                     bytes[count++] = read_value;
                     encode = true;
                 } else {
@@ -218,57 +226,92 @@ bool convert(const int input_fd,const int output_fd)
                         perror("NULL");
                         goto conversion_done;
                     }
-                    /* Encode the current values into UTF-16LE */
+                    /* Encode the current values in the buffer into UTF-16LE */
                     encode = true;
                 }
             }
             /* If its time to encode do it here */
-            if(!encode) {
-                int value=0;
-                bool isAscii = false;            
-                if((bytes[0] & UTF8_4_BYTE) == UTF8_4_BYTE) {
-                     value = bytes[0] & 0x7;
-                } else if((bytes[0] & UTF8_3_BYTE) == UTF8_3_BYTE) {
-                      value =  bytes[0] & 0xF;
-                } else if((bytes[0] & UTF8_2_BYTE) == UTF8_2_BYTE) {
-                     value =  bytes[0] & 0x1F;
-                } else if((bytes[0] & 0x80) == 0) {
-                    /* Value is an ASCII character */
-                    value = bytes[0];
-                    isAscii = true;
-                } else {
-                    /* Marker byte is incorrect */
-                    goto conversion_done;
-                }                     
-                if(!isAscii) {
-                   
-                   for(int i=0 ; i <= count; i++){  /*@todo is this for loop going to work?*/
-                       value = ((value << 6) | (bytes[i] & 0x3F));
-                   }  
-                   /* How is there more bytes if we have an ascii char? */
-                   goto conversion_done;
+            if(encode){
+                int i, value=0;
+                bool isAscii = false;
+                for(i=0;i<count;i++){
+                  if(i==0){            
+                    /* Masking to get the LSB of the bytes */ 
+                    if((bytes[i] & UTF8_4_BYTE) == UTF8_4_BYTE) {
+                       value = bytes[i] & 0x7; /*MSB = 11110 Grab the last 3 bits */
+                    } else if((bytes[i] & UTF8_3_BYTE) == UTF8_3_BYTE) {
+                       value =  bytes[i] & 0xF;/*MSB = 1110 Grab the last 4 bits */
+                    } else if((bytes[i] & UTF8_2_BYTE) == UTF8_2_BYTE) {
+                       value =  bytes[i] & 0x1F; /*MSB =110 Grab the last 5 bits  */
+                    } else if((bytes[i] & 0x80) == 0) {
+                        /* Value is an ASCII character */
+                       value = bytes[i];
+                       isAscii = true;
+                    } else {
+                        /* Marker byte is incorrect */
+                        goto conversion_done;
+                    } 
+                  }else{/* Going to the subsequent bytes */                    
+                     if(!isAscii) {
+                       /*value is from the previous bytes */
+                       value = ((value << 6) | (bytes[i] & 0x3F));/* bytes[i] is current byte */ 
+                     }else{
+                       /* How is there more bytes if we have an ascii char? */
+                       goto conversion_done;
+                     }
                      
+                  }
                 }
                 /* Handle the value if its a surrogate pair*/
                 if(value >= SURROGATE_PAIR) {
                     int vprime = value - SURROGATE_PAIR;
                     int w1 = (vprime >> 10) + 0xD800;
-                    int w2 = 0 /*(vprime & 0x3FF) + 0xDC00*/;
-                    /* write the surrogate pai*//*r to file */
-                    if(!safe_write(output_fd, &w1, CODE_UNIT_SIZE)) {
-                    	/* Assembly for some super efficient coding */
-                        asm("movl	$8, %esi\n\t"
-			    "movl	$.LC0, %edi\n\t"
-	        		"movl	$0, %eax");
-                        goto conversion_done;
-                    }
-                    if(!safe_write(output_fd, &w2, CODE_UNIT_SIZE)) {
-                    	/* Assembly for some super efficient coding */
-                        asm("movl	$8, %esi\n\t"
+                    int w2 = ((vprime & 0x3FF) + 0xDC00);
+                 
+                    /*Check the machine for endianness and write accordingly */
+                    int checkEndian = 1;
+                    char *checkEndianPtr= ((char*) &checkEndian);
+                    int endianResult = ((int) (*checkEndianPtr));
+                    
+                   /* if(endianResult == 0){
+                       printf("this is a big endian machine, result is 0, the MSB");
+                    }else if(endianResult ==1){
+                       printf("this is a little endian machine, result is 1 the LSB");
+                    }*/
+
+                    if(endianResult == 0){
+                       /* write the surrogate pair to file */
+                       if(!safe_write(output_fd, &w1, CODE_UNIT_SIZE)) {
+                       	/* Assembly for some super efficient coding */
+                         asm("movl	$8, %esi\n\t"
+			     "movl	$.LC0, %edi\n\t"
+	         		"movl	$0, %eax");
+                          goto conversion_done;
+                       }
+                       if(!safe_write(output_fd, &w2, CODE_UNIT_SIZE)) {
+                        	/* Assembly for some super efficient coding */
+                          asm("movl	$8, %esi\n\t"
 							"movl	$.LC0, %edi\n"
 							"movl	$0, %eax");
-                        goto conversion_done;
-                    }
+                          goto conversion_done;
+                       }
+                     }else if (endianResult == 1){
+                       if(!safe_write(output_fd, &w2, CODE_UNIT_SIZE)) {
+                        	/* Assembly for some super efficient coding */
+                          asm("movl	$8, %esi\n\t"
+							"movl	$.LC0, %edi\n"
+							"movl	$0, %eax");
+                          goto conversion_done;
+                       }
+                        /* write the surrogate pair to file */
+                       if(!safe_write(output_fd, &w1, CODE_UNIT_SIZE)) {
+                       	/* Assembly for some super efficient coding */
+                         asm("movl	$8, %esi\n\t"
+			     "movl	$.LC0, %edi\n\t"
+	         		"movl	$0, %eax");
+                          goto conversion_done;
+                       }
+                     }
                 } else {
                     /* write the code point to file */
                     if(!safe_write(output_fd, &value, CODE_UNIT_SIZE)) {
@@ -278,6 +321,15 @@ bool convert(const int input_fd,const int output_fd)
 							"movl	$0, %eax");
                         goto conversion_done;
                     }
+                   /* int zero =0;
+                    if(!safe_write(output_fd, &zero, CODE_UNIT_SIZE)) {
+              
+                        asm("movl	$8, %esi\n"
+							"movl	$.LC0, %edi\n"
+							"movl	$0, %eax");
+                        goto conversion_done;
+                    }*/
+
                 }
                 /* Done encoding the value to UTF-16LE */
                 encode = false;
