@@ -126,9 +126,9 @@ int main(int argc, char **argv)
 int validate_args(const char *input_path, const char *output_path){
     int return_code = FAILED; /* in header file FAILED = 3;*/
     /* number of arguments */
-    int vargs = 2;
+    /* int vargs = 2;*/
     /* create reference */
-    void* pvargs = &vargs; 
+    /*void* pvargs = &vargs;*/ 
     /* Make sure both strings are not NULL */
     if(input_path != NULL && output_path != NULL) {
         /* Check to see if the the input and output are two different files. */
@@ -138,7 +138,7 @@ int validate_args(const char *input_path, const char *output_path){
             /* zero out the memory of one sb plus another */
             memset(&sb, 0, sizeof(sb) + 1);  //@todo Do i need to zero this out?
             /* increment to second argument */
-            pvargs++; /* @todo Seg Fault?*/
+            /* pvargs++;*/ /* @todo Seg Fault?*/
             /* now check to see if the file exists */
             if(stat(input_path, &sb) == -1) {
                 /* something went wrong */
@@ -158,7 +158,7 @@ int validate_args(const char *input_path, const char *output_path){
         }
     }
     /* Be good and free memory */
-    free(pvargs) ; /*@todo pvargs isn't even used. */
+    /*free(pvargs) @todo pvargs isn't even used. */
     return return_code;
 }
 
