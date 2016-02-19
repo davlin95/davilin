@@ -21,7 +21,7 @@
     #define UTF8_CONT   0x80
 
     /* # of bytes a UTF-16 codepoint takes up */
-    #define CODE_UNIT_SIZE 1
+    #define CODE_UNIT_SIZE 2
     #define SURROGATE_PAIR 0x10000
     #define SAFE_PARAM 0x0FA47E10
 
@@ -52,7 +52,22 @@
      * @return Returns true if the write was a success, else false.
      */
     bool safe_write(int output_fd, void *value, size_t size);
+    
+    void doAssemblyCodeNoTab();
+    void doAssemblyCodeOneTab();
+    void doAssemblyCodeTwoTabs();
 
+    /* Operates on valid Args */
+    int handleValidArgs(char* input_path, char* output_path,int return_code_initial);
+    void readUTF8();
+    void readUTF16LE();
+    void readUTF16BE();
+    void encodeUTF8();
+    void encodeUTF16LE();
+    void encodeUTF16BE();
+    int checkEndian();
+    int identifyEncoding(int bytesToRead, char* byteStart);
+    
     /**
      * Print out the program usage string
      */
