@@ -21,7 +21,7 @@
     #define UTF8_CONT   0x80
 
     /* # of bytes a UTF-16 codepoint takes up */
-    #define CODE_UNIT_SIZE 2
+    #define CODE_UNIT_SIZE 1
     #define SURROGATE_PAIR 0x10000
     #define SAFE_PARAM 0x0FA47E10
 
@@ -43,7 +43,7 @@
      * @param output_fd The output files file descriptor.
      * @return Returns true if the conversion was a success else false.
      */
-    bool convert(const int input_fd, const int output_fd);
+bool convert(const int input_fd,const int output_fd,int endianResult);
 
     /**
      * Writes bytes to output_fd and reports the success of the operation.
@@ -51,23 +51,27 @@
      * @param size Size of the value in bytes to write.
      * @return Returns true if the write was a success, else false.
      */
-    bool safe_write(int output_fd, void *value, size_t size);
-    
-    void doAssemblyCodeNoTab();
-    void doAssemblyCodeOneTab();
-    void doAssemblyCodeTwoTabs();
+    bool safe_write(int output_fd, int *value, size_t size, int endianResult);
+    int readUTF16TwoByte(const int fileDescriptor);
+    int generateCodePointFromSurrogatePair(int msbPair, int lsbPair);
+    int find10BitsFromLSB(int lsbHex);
+    int UTF16TwoByteFlip(int bytePair);
+
+    /*Convert to UTF-8 */
+    int utf8BytesNeededFromCodePoint(int codepoint);
+    int utf8FromCodePoint(int codepoint);
+
+    bool writeCodepointToSurrogatePair(int output_fd, int codepoint, int endianness);
+    int writeUTF8Bytes(int output_fd, int utf8Bytes);
+
 
     /* Operates on valid Args */
-    int handleValidArgs(char* input_path, char* output_path,int return_code_initial);
-    void readUTF8();
-    void readUTF16LE();
-    void readUTF16BE();
-    void encodeUTF8();
-    void encodeUTF16LE();
-    void encodeUTF16BE();
+int handleValidArgs(char* input_path, char* output_path,int return_code_initial, char *encodeFormat);
+    bool checkForSurrogatePair(int codeunit);
     int checkEndian();
-    int identifyEncoding(int bytesToRead, char* byteStart);
-    
+    int identifyEncoding(char* input_fd);
+
+    bool prefixByteOrderMarkings(const int fileDescriptor,int bomType);
     /**
      * Print out the program usage string
      */
