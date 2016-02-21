@@ -21,7 +21,6 @@ int main(int argc, char **argv)
     char *encodeOutput; /*optional encode flag */
 
     /* Test */
-    printf("UTF8FromCodepoint: %x ",utf8FromCodePoint(0x4e16));
 
     /* Parse short options */
     while((opt = getopt(argc, argv, "vhe:")) != -1) {
@@ -31,7 +30,6 @@ int main(int argc, char **argv)
                        exit(EXIT_SUCCESS);
                        break;
             case 'v':  if(vargs <3) vargs++;
-                       fprintf(stderr, "\nV is in %d\n",vargs );
                        break;
             case 'e':  encodeOutput = (optarg); /*grab the encode format */
                        break;
@@ -108,7 +106,7 @@ int validate_args(const char *input_path, const char *output_path){
         if(strcmp(input_path, output_path) != 0) {
             struct stat sb; /* Check if input file exists */
             memset(&sb, 0, sizeof(sb) + 1); /* zero out the memory of one sb plus another */
-            
+
             /* now check to see if the file exists */
             if(stat(input_path, &sb) == -1) {
                 if(errno == ENOENT) { /* something went wrong */
@@ -117,10 +115,23 @@ int validate_args(const char *input_path, const char *output_path){
                     perror("NULL"); /* No idea what the error is. */
                 }
             } else {
-                return_code = VALID_ARGS;
+
+                struct stat sb2; /* To check the second file path*/
+                memset(&sb2, 0, sizeof(sb2) + 1); /*zero out the memory */
+
+                if(lstat(output_path,&sb) ==-1){
+                    return_code = VALID_ARGS;
+                }else if( (sb.st_dev == sb2.st_dev) & (sb.st_size == sb2.st_size) & 
+                  (sb.st_ino == sb2.st_ino) ){
+                    return_code = SAME_FILE; /*Symbolic link*/
+                }else return_code = VALID_ARGS;
+                
             }
 
-        }else return_code = SAME_FILE; /*Same input and output files*/
+        }else{     
+                return_code = SAME_FILE; /*Same input and output files*/
+         
+        }
     }
     return return_code;
 }
@@ -476,7 +487,7 @@ int handleValidArgs(char* input_path, char* output_path,int return_code_initial,
         perror("Failed File Prefix");
         return false;
     }
-    printf("\nInputFormat is :  %d  outputFormat is : %d\n", inputFormat, outputFormat);
+
     /*Determine conversion type, then convert*/
     if( (inputFormat == 0) & (outputFormat == 1) )
         success = convert(input_fd, output_fd,1); /*Convert from utf8 to utf16LE */
@@ -612,7 +623,7 @@ int readUTF16TwoByte(const int fileDescriptor){
             if(i == 0) hexBytePair = 0;
             hexBytePair = hexBytePair <<8; /*Shift one byte to the left, think binary */
             hexBytePair = (hexBytePair|byteValue);/* Capture the byte */
-            printf("hexBytePair: %x i: %d\n",hexBytePair,i);
+            
         }
     }
     if(count < 2) return -1; /* Wasn't able to read a whole code unit pair, return error */
@@ -671,9 +682,9 @@ bool writeCodepointToSurrogatePair(int output_fd, int codepoint, int endianness)
     bool writeSuccess = false;
 
     /* write the surrogate pairs to file */
-    writeSuccess = safe_write(output_fd, &w1, 2, endianness); 
+    writeSuccess = safe_write(output_fd, &w1, 1, endianness); 
     if(writeSuccess ==false) return writeSuccess;
-    writeSuccess = safe_write(output_fd, &w2, 2, endianness);
+    writeSuccess = safe_write(output_fd, &w2, 1, endianness);
     return writeSuccess;  
 }
 
@@ -695,7 +706,7 @@ int writeUTF8Bytes(int output_fd, int utf8Bytes){
     else if ( (utf8Bytes & 0xFF00) != 0 ) bytesContained =2;
     else bytesContained =1;
 
-    printf("method writeUTF8Bytes(): bytesContained is: %d\n",bytesContained);
+   
 
     /* write the utf8 bytes to file */
     int i;
@@ -707,14 +718,12 @@ int writeUTF8Bytes(int output_fd, int utf8Bytes){
         int mask = (0xFF<< (8*shift));
         writeByte= (utf8Bytes & mask); /*first byte */
         writeByte = (writeByte >> (8*shift)); /* Shift back to isolate first byte */
-
         /*write byte*/
         writeSuccess = write(output_fd, &writeByte,1); /*Write one byte */
         if(writeSuccess < 0) return writeSuccess;
         
         /*Reset*/
         writeByte = 0;               /*Clear */
-        utf8Bytes = (utf8Bytes<<8); /*Move to byte 2*/    
     }
     return writeSuccess;  
 }
