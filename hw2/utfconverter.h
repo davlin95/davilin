@@ -37,36 +37,25 @@
      */
     int validate_args(const char *input_path, const char *output_path);
 
-    /**
-     * Converts the input file UTF-8 file to UTF-16LE.
-     * @param input_fd The input files file descriptor.
-     * @param output_fd The output files file descriptor.
-     * @return Returns true if the conversion was a success else false.
-     */
-bool convert(const int input_fd,const int output_fd,int endianResult);
 
-    /**
-     * Writes bytes to output_fd and reports the success of the operation.
-     * @param value Value to be written to file.
-     * @param size Size of the value in bytes to write.
-     * @return Returns true if the write was a success, else false.
-     */
     bool safe_write(int output_fd, int *value, size_t size, int endianResult);
     int readUTF16TwoByte(const int fileDescriptor);
     int generateCodePointFromSurrogatePair(int msbPair, int lsbPair);
     int find10BitsFromLSB(int lsbHex);
     int UTF16TwoByteFlip(int bytePair);
 
-    /*Convert to UTF-8 */
+    /*Conversion*/
     int utf8BytesNeededFromCodePoint(int codepoint);
     int utf8FromCodePoint(int codepoint);
+    bool convert(const int input_fd,const int output_fd,int endianResult);
+    bool convertUTF16BigLittle(const int input_fd, const int output_fd);
 
     bool writeCodepointToSurrogatePair(int output_fd, int codepoint, int endianness);
     int writeUTF8Bytes(int output_fd, int utf8Bytes);
 
 
     /* Operates on valid Args */
-int handleValidArgs(char* input_path, char* output_path,int return_code_initial, char *encodeFormat);
+    int handleValidArgs(char* input_path, char* output_path,int return_code_initial, char *encodeFormat);
     bool checkForSurrogatePair(int codeunit);
     int checkEndian();
     int identifyEncoding(char* input_fd);

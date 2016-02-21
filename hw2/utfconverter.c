@@ -31,10 +31,6 @@ int main(int argc, char **argv)
                        fprintf(stderr, "\nV is in %d\n",vargs );
                        break;
             case 'e':  encodeOutput = (optarg); /*grab the encode format */
-                       printf("\nThe -e arg is %s\n",encodeOutput);
-                       printf("Testing the prefix function: \n");
-                       bool x = prefixByteOrderMarkings(1,0);
-                       printf("Success: %d",x);
                        break;
             case '?':  /* Let this case fall down to default handled during bad option.*/  
             
@@ -227,7 +223,8 @@ bool convert(const int input_fd,const int output_fd,int endianResult)
 
                 /* Handle the value if its a surrogate pair*/
                 if(value >= SURROGATE_PAIR){
-                   bool writeSuccess = writeCodepointToSurrogatePair(output_fd,value,endianResult); 
+                   bool writeSuccess = writeCodepointToSurrogatePair
+                     (output_fd,value,endianResult); 
                    if(!writeSuccess) return success;
                 } else{
                     /* write the code point to file */
@@ -246,7 +243,10 @@ bool convert(const int input_fd,const int output_fd,int endianResult)
 }
 
 
-/* A function that converts from UTF16 LE or UTF16BE to UTF8 */
+/* A function that converts from UTF16 LE or UTF16BE to UTF8
+ * 0 means we're converting from UTF16BE 
+ * 1 means we're converting from UTF16LE
+ */
 bool convertUTF16_UTF8(const int input_fd, const int output_fd, int endianness){
     /*Check for invalid file descriptor*/
     if(input_fd<0){
@@ -256,7 +256,6 @@ bool convertUTF16_UTF8(const int input_fd, const int output_fd, int endianness){
         perror("error: input_fd closed");
         return false;
     }
-  
     /*Declare Var*/
     bool success = false;
     int bytes_read = 0;
@@ -267,37 +266,92 @@ bool convertUTF16_UTF8(const int input_fd, const int output_fd, int endianness){
 
     /* bytes_read = two byte hex values, unless no more utf16 bytes, then is -1 */
     while( (bytes_read = readUTF16TwoByte(input_fd)) != -1 ){ 
-
         /*Search for 1st code unit */
         if(!continueSearchSecondSurrogate){ 
             if(endianness ==1) /*Little Endian */
                 codeUnitOne = UTF16TwoByteFlip(bytes_read);/*Flip Bytes since it is Little endian */
             else codeUnitOne = bytes_read; 
-
             /*Do we need to look for second pair?*/
             if(checkForSurrogatePair(codeUnitOne) == true){ 
                 continueSearchSecondSurrogate=true;
                 continue;
-            }else codepoint = codeUnitOne; /*We have a code unit to evaluate */           
+            }else codepoint = codeUnitOne; /*We have a code unit to evaluate */          
         }
 
         /*Search for second code unit */
         else{
-            if(endianness ==1) /*Little Endian*/
-                codeUnitTwo = UTF16TwoByteFlip(bytes_read); /*Flip Bytes again for little endian*/
+            if(endianness ==1){ /*Little Endian*/
+                codeUnitTwo = UTF16TwoByteFlip(bytes_read); 
+                /*Flip Bytes again for little endian*/ 
+            }
             else codeUnitTwo = bytes_read;
 
             continueSearchSecondSurrogate = false; /*Completed search for code units*/
             codepoint = generateCodePointFromSurrogatePair(codeUnitOne,codeUnitTwo);
         }
-
        int utf8Bytes = utf8FromCodePoint(codepoint); /*Convert codepoint to utf8 */
-       int written = writeUTF8Bytes(utf8Bytes,output_fd); /*write utf8 bytes to file */
-       if(written < 0) { success = false; return success;}  /*Exit Early Read Failure */
+       int written = writeUTF8Bytes(output_fd,utf8Bytes); /*write utf8 bytes to file */
+       if(written < 0) { 
+           printf("ERROR writing in convertUTF16 to 8");
+           success = false; 
+           return success;
+
+       }else success = true; /*Exit Early Read Failure */
     }
     return success;
 }
 
+
+/* A function that converts little endian UTF16 to big endian, and vice versa depending on input. 
+ * @param input_fd: input filedescriptor
+ * @param output_fd : output file descriptor
+ * @return boolean : Successful or not. 
+ */
+bool convertUTF16BigLittle(const int input_fd, const int output_fd){
+    /*Check for invalid file descriptor*/
+    if(input_fd<0){
+        perror("error: input_fd closed");
+        return false;
+    } else if (output_fd<0){
+        perror("error: input_fd closed");
+        return false;
+    }
+
+    /*Declare Var*/
+    bool success = false;
+    int bytes_read = 0;
+    int codeUnit=0;
+    int byteOne=0;
+    int byteTwo=0;
+
+    /* bytes_read = two byte hex values, unless no more utf16 bytes, then is -1 */
+    while((bytes_read = readUTF16TwoByte(input_fd)) != -1 ){ 
+        /*Grab a code unit and flip it */
+        codeUnit = UTF16TwoByteFlip(bytes_read); /*Flip Bytes for the code unit*/
+
+        /*Create bytes*/
+        byteOne = codeUnit&0xFF00; /*Assign byte one*/
+        byteTwo = codeUnit &0xFF; /*Assign byte two*/
+        byteOne = byteOne>>8; /*Shift One byte over to isolate*/
+          
+        /*Writing byte one */
+        int written = write(output_fd,&byteOne, 1); 
+        if(written < 0) { 
+            printf("ERROR writing in convertUTF16 Little/Big Endianness");
+            success = false; 
+            return success;
+        }else success = true; /*Exit Early Read Failure */
+
+        /*Writing Byte Two */
+        written = write(output_fd,&byteTwo, 1); 
+        if(written < 0) { 
+            printf("ERROR writing in convertUTF16 Little/Big Endianness");
+            success = false; 
+            return success;
+        }else success = true; /*Exit Early Read Failure */
+    }
+    return success;
+}
 
 /* Function that checks Endianness of the machine 
  * @param returns: 0 for big endian, 1 for little endian machine
@@ -418,7 +472,7 @@ int handleValidArgs(char* input_path, char* output_path,int return_code_initial,
         perror("Failed File Prefix");
         return false;
     }
-
+    printf("\nInputFormat is :  %d  outputFormat is : %d\n", inputFormat, outputFormat);
     /*Determine conversion type, then convert*/
     if( (inputFormat == 0) & (outputFormat == 1) )
         success = convert(input_fd, output_fd,1); /*Convert from utf8 to utf16LE */
@@ -427,11 +481,12 @@ int handleValidArgs(char* input_path, char* output_path,int return_code_initial,
     else if( (inputFormat==1) & (outputFormat ==0) ) 
         success = convertUTF16_UTF8(input_fd, output_fd, 1); /*Convert from utf16LE to utf8 */
     else if( (inputFormat==1) & (outputFormat ==2) ) 
-        /*success = convertUTF16LE_UTF16BE(input_fd, output_fd)*/; /*Convert from utf16LE to utf16BE */
-    else if( (inputFormat==2) & (outputFormat ==0) ) 
+        success = convertUTF16BigLittle(input_fd, output_fd); /*Convert from utf16LE to utf16BE */
+    else if( (inputFormat==2) & (outputFormat ==0) ){
         success = convertUTF16_UTF8(input_fd, output_fd, 0); /*Convert from utf16BE to utf8 */
+    }
     else if( (inputFormat==2) & (outputFormat ==1) )
-        /*success = convertUTF16BE_UTF16LE(input_fd, output_fd)*/; /*Convert from utf16BE to utf16LE */
+        success = convertUTF16BigLittle(input_fd, output_fd); /*Convert from utf16BE to utf16LE */
     else exit(EXIT_FAILURE); /*Should never reach this statement unless inputFormat is incorrect*/
 
 /*Exit Code */
@@ -528,6 +583,7 @@ int readUTF16TwoByte(const int fileDescriptor){
             if(i == 0) hexBytePair = 0;
             hexBytePair = hexBytePair <<8; /*Shift one byte to the left, think binary */
             hexBytePair = (hexBytePair|byteValue);/* Capture the byte */
+            printf("hexBytePair: %x i: %d\n",hexBytePair,i);
         }
     }
     if(count < 2) return -1; /* Wasn't able to read a whole code unit pair, return error */
@@ -610,12 +666,18 @@ int writeUTF8Bytes(int output_fd, int utf8Bytes){
     else if ( (utf8Bytes & 0xFF00) != 0 ) bytesContained =2;
     else bytesContained =1;
 
+    printf("method writeUTF8Bytes(): bytesContained is: %d\n",bytesContained);
+
     /* write the utf8 bytes to file */
     int i;
-    for(i=0;i<bytesContained;i++){
+    int shift;
+ 
+    for(i=1;i<=bytesContained;i++){
         /*Getting the byte */
-        writeByte= (utf8Bytes & 0xFF000000); /*first byte */
-        writeByte = (writeByte >> 24); /* Shift to isolate first byte */
+        shift = bytesContained -i; 
+        int mask = (0xFF<< (8*shift));
+        writeByte= (utf8Bytes & mask); /*first byte */
+        writeByte = (writeByte >> (8*shift)); /* Shift back to isolate first byte */
 
         /*write byte*/
         writeSuccess = write(output_fd, &writeByte,1); /*Write one byte */
