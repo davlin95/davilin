@@ -52,6 +52,7 @@
 
     bool writeCodepointToSurrogatePair(int output_fd, int codepoint, int endianness);
     int writeUTF8Bytes(int output_fd, int utf8Bytes);
+    bool copyFile(const char *input_path,const char *output_path);
 
 
     /* Operates on valid Args */

@@ -20,6 +20,9 @@ int main(int argc, char **argv)
     FILE* standardout = stdout; /* open output channel */
     char *encodeOutput; /*optional encode flag */
 
+    /* Test */
+    printf("UTF8FromCodepoint: %x ",utf8FromCodePoint(0x4e16));
+
     /* Parse short options */
     while((opt = getopt(argc, argv, "vhe:")) != -1) {
         switch(opt) {
@@ -404,8 +407,6 @@ int identifyEncoding(char* input_string){
 }
 
 
-  
-
 /* Function that handles the valid args inputs into the program 
  * @param input_path : pointer to the string input path
  * @param output_path : pointer to the string output path
@@ -433,7 +434,10 @@ int handleValidArgs(char* input_path, char* output_path,int return_code_initial,
     else exit(EXIT_FAILURE); /*Exit Early*/
     
     /*Check for invalid input-->output combinations */
-    if(inputFormat ==outputFormat) return success; /* We just read a utf8 input file */
+    if(inputFormat ==outputFormat) {
+        success = copyFile(input_path,output_path);
+        return success;
+    } /* We just read a utf8 input file */
 
     /* Attempt to open the input file */
     input_fd = open(input_path, O_RDONLY);
@@ -505,6 +509,31 @@ conversion_done:
     return return_code;
 }
 
+
+bool copyFile(const char* input_path,const char* output_path){
+    int input_fd =-1,output_fd = -1;
+    input_fd = open(input_path,O_RDONLY);
+    if(input_fd < 0 ) return false;
+    /* Delete the output file if it exists; Don't care about return code. */
+    unlink(output_path);
+    output_fd = open(output_path, O_CREAT | O_WRONLY, S_IRUSR | S_IWUSR | S_IRGRP | S_IWGRP);
+    if(output_fd < 0) return false;
+    
+    int bytes_read = 0;
+    int byteVal = 0;
+    bool written = false;
+    while( (bytes_read = read(input_fd, &byteVal,1)) == 1){
+        written = write(output_fd, &byteVal,1);
+        if(written<0){
+            written = false;
+            perror("Unable to copy the file");
+            break;
+        }else written = true;
+    } 
+    close(input_fd);
+    close(output_fd);
+    return written;
+}
 
 /* A function that determine if the code unit is part of a surrogate pair
  * Assumes that everything is in big endian form, must reverse if start as Little end.
