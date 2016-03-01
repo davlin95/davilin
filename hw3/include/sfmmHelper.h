@@ -4,12 +4,23 @@ void split( );
 
 
 /* This is a helper function that reads the allocation bit and determines if the block is free*/
-bool isBlockFree();
+unsigned long readAllocatedBit(void* ptr);
 
+/* Helper function that reads the block size bits of a header then returns it */
+unsigned long readBlockSize(void* ptr);
 
+/* This is a helper function that reads the requested size of a headerblock */
+unsigned long readRequestedSize(void* ptr);
+
+/* This is a helper function that writes to the requested_size bits */
+void writeRequestedSize(unsigned long requested_size, void* ptr);
 
 /* This is a helper function that gets the previous block */
 void* getPrevBlock();
+
+
+/* This is a helper function that tests if an address is aligned */
+bool isAligned(void* address);
 
 
 
@@ -25,10 +36,6 @@ void getNextBlockSize();
 
 /*HelperFunction: Get size of the previous block */
 void getPrevBlockSize();
-
-
-/* This is a helper function to request extra heap space: mem_sbrk()? */
-void heapIncrementRequest();
 
 
 /* Helper Function: Pads block to aligned boundaries. */
