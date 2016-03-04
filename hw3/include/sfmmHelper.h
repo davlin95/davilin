@@ -1,4 +1,5 @@
 extern sf_free_header* freelist_current;
+
 /* This is a helper function that splits a free block into smaller blocks */
 void split( );
 
@@ -10,6 +11,12 @@ int calculateRequestSize(size_t size);
 
 /* Helper function that reads the block size bits of a header then returns it */
 unsigned long readBlockSize(void* ptr);
+
+/* Helper function that travels from header struct to footer struct of a block */
+void* headerTravelToFooter(sf_free_header* start);
+
+/* Goes from footer struct to header struct of a block */
+void* footerTravelToHeader(sf_footer* end);
 
 /*Helper function that aligns the heap */
 void* alignHeap();
@@ -23,6 +30,8 @@ void putLongAtPointer(void* pointer, unsigned long value);
 /*Helper function to read the value of the header at the heap */
 unsigned long  getLongAtPointer(void* pointer);
 
+/* Gets the address of the start of the block*/
+uintptr_t addressOf(sf_free_header* block);
 
 /*Helper function that returns the payload*/
 void* getPayloadPtr(void* node);
@@ -82,22 +91,14 @@ void padToAlignment();
 /* Helper Function : Flip allocation Bit */
 void flipAllocationBit();
 
-
-
-/* This is a helper function that performs coalesce on the previous block */
-void * coalescePrevBlock();
-
-/* This is a helper function that performs coalesce on the next block */
-void * coalesceNextBlock();
-
-
-/* This is a helper function that performs coalesce on both the next and previous block */
-void* coalescePrevNextBlock();
-
-
-/* This is a bottom level merge of two blocks */
-void* mergeBlocks();
-
+/* Coalesce functions*/
+void* coalesceForward(sf_free_header* head);
+void* coalesceBackward(sf_free_header* head);
+void* coalesce(sf_free_header* coalesceBlock);
 
 /* Helper Function: Check Valid address for this program's mem allocation */
 bool validateAddress();
+
+/* Merge blocks */
+void* merge(sf_free_header* block1, sf_free_header* block2);
+

@@ -20,33 +20,23 @@ sf_free_header* freelist_head = NULL;
 #define PAGE_SIZE 4096
 
 void testPrint(){
-/*Test: test the following principles of block creation
-	sf_free_header* block = sf_sbrk(PAGE_SIZE);
-	(block -> header).alloc = 0;
-	(block -> header).block_size = 4096;
-	(block -> header).requested_size = size;
+/*Test: test the following principles of block creation*/
+	printf("\n TESTING TESTPRINT:  \n");
+	alignHeap();
+	sf_free_header* head1 =createAlignedBlock(4);
+	sf_free_header* head2 =createAlignedBlock(2);
+	sf_free_header* head3 =createAlignedBlock(6);
 
-	sf_free_header* block2 = sf_sbrk(PAGE_SIZE);
-	(block2 -> header).alloc = 1;
-	(block2 -> header).block_size = 4095;
-	(block2 -> header).requested_size = 4094;
-	
-	freelist_head = block ;
-	(block -> prev) = NULL;	
-	(block -> next) = block2;
-	(block2 -> next) = NULL;
-	(block2 -> prev) = block;
-	freelist_head = block ;
+	freelist_head = head1;
+	freelist_head->next = head2;
+	head2->next = head3;
 
-	sf_header sfheader = (block->header);
-	printf("SF_HEADER BLOCK alloc : %d\n",sfheader.alloc);
-	printf("SF_HEADER BLOCK requestedsize: %d\n",sfheader.requested_size);
-	printf("SF_HEADER BLOCK blocksize : %d\n",sfheader.block_size);
-
-	sf_header sfheader2 = ((block->next)->header);
-	printf("SF_HEADER2 BLOCK2 alloc : %d\n",sfheader2.alloc);
-	printf("SF_HEADER2 BLOCK2 requestedsize: %d\n",sfheader2.requested_size);
-	printf("SF_HEADER2 BLOCK2 blocksize : %d\n",sfheader2.block_size);*/
+	head2->prev = freelist_head;
+	head3->prev = head2;
+	printf("\nTesting COALESCING:\n");
+	 sf_free_header* testHeader = coalesce(head2);
+	 sf_blockprint(testHeader);
+	 freelist_head = NULL;
 
 }
 
@@ -56,6 +46,8 @@ void testPrint(){
  * @param size : size of bytes to be malloced. 
  */
 void* sf_malloc(size_t size) {
+	testPrint();
+
 	/*Upper limit of size is 4GB */
 	unsigned long long maxSize = (1024*1024*1024);
 	maxSize = maxSize * 4;
@@ -90,7 +82,6 @@ void* sf_malloc(size_t size) {
 	}else{  
 		/* The fit block is the only node, which is the freelist_head*/
 		/* Replace the freelist_head with new free block */
-
 		alignHeap();
 		freelist_head = createAlignedBlock(1);
 		freelist_head->next = NULL;
@@ -114,7 +105,7 @@ void sf_free(void *ptr) {
 
 		/* Update the footer block */
 		void* footerBlock = (void*)(((char*)ptr)+blockSize-8); /* footer starts 8 bytes before end of block*/
-		sf_footer* footerStructPtr = (void*)(((char*)footerBlock)+4); /* Grab the struct*/
+		sf_footer* footerStructPtr = footerBlock; /* Grab the struct*/
 		footerStructPtr->alloc=0; /* Update the footer alloc bit */
 
 		/*Put the free block into the front of the freelist */
@@ -181,7 +172,7 @@ sf_free_header* findFirstFitPolicy(unsigned long requested_size, sf_free_header*
 		return NULL;
 
 	/*TESTCODE: FINDING SEGFAULT*/
-	printf("\nREQUESTED SIZE OF FIRSTFITPOLICY :%lu  CURRENT SIZE OF HEAD BLOCK: %d\n", requested_size, curr->header.block_size);
+	printf("\nREQUESTED SIZE OF FIRSTFITPOLICY :%lu  CURRENT SIZE OF HEAD BLOCK: %d\n", requested_size, curr->header.block_size<<4);
 
 	/* Check current head for the free block before going through the list */
 	if ((((curr->header).block_size)<<4) >= requested_size){ 
@@ -210,8 +201,7 @@ void updateBlockToAllocated(sf_free_header* block,size_t size){
 	/* Get access to footer struct */
 	unsigned long blockSize = (((block->header).block_size)<<4); /* Grab Block size  */
 	void* endOfBlock = (void*)(((char*)block) + blockSize); /* ptr to end of block */
-	void* footerStartPtr = (((char*)endOfBlock)-4); /* ptr to beginning of footer struct */
-	sf_footer* footer = footerStartPtr;
+	sf_footer* footer = (void*)(((char*)endOfBlock)-8); /* ptr to beginning of footer struct */
 
 	/* Update header struct */
 	((block->header).alloc) = 1;
@@ -230,8 +220,7 @@ void* updateBlockToFree(sf_free_header* allocatedBlock){
 	/* Get access to footer struct */
 	unsigned long blockSize = (((allocatedBlock->header).block_size)<<4); /* Grab Block size  */
 	void* endOfBlock = (void*)(((char*)allocatedBlock) + blockSize); /* ptr to end of block */
-	void* footerStartPtr = (((char*)endOfBlock)-4); /* ptr to beginning of footer struct */
-	sf_footer* footer = footerStartPtr;
+	sf_footer* footer = (void*)(((char*)endOfBlock)-8); /* ptr to beginning of footer struct */
 
 	/* Update header struct */
 	((allocatedBlock->header).alloc) = 0;
@@ -283,12 +272,7 @@ void* insertHeader(void* startingAddress, int alloc, int block_size, int request
 	headerStart->header.alloc = alloc;
 	headerStart->header.block_size = (block_size>>4);
 	headerStart->header.requested_size = requested_size;
-
-	/*Test */
-	printf("\nIn insertHeader(): sizeof(sf_free_header) = : %lu \n", sizeof(sf_free_header));
-	printf("\nIn insertHeader(): sizeof(sf_footer) = : %lu \n", sizeof(sf_footer));
-
-	return ((char*) startingAddress + sizeof(sf_free_header));
+	return ((char*) startingAddress + block_size-8);
 }
 
 /* A function that inserts a footer boundary, by asking for more heap memory.
@@ -303,7 +287,7 @@ void* insertFooter(void* startingAddress, int alloc, unsigned long block_size){
 	sf_footer* footer = (void*)((char*)startingAddress); /* since sf_footer is only 4 bytes, but footer bound is 8 bytes */
 	footer->alloc = alloc;
 	footer->block_size = (block_size>>4);
-	return ((char*) startingAddress+8);
+	return (void*)((char*) startingAddress+4);
 }
 
 /* A function that creates a block in the heap, in the following format 
@@ -327,7 +311,7 @@ void* createAlignedBlock(int multipleOfPageSize){
 	void* endOfHeadPayloadBlock =(void*) ((char*)headPtr + headAndPayload);*/
 
 	/*Initialize header */
-	void* endOfHeadPtr = insertHeader(headPtr,0,wholeBlockSize,0); 
+	void* endOfHeadPayloadPtr = insertHeader(headPtr,0,wholeBlockSize,0); 
 
 	/*Initialize Footer */ 		   
 	void* footerStartPtr = sf_sbrk(8);
@@ -424,22 +408,25 @@ void* alignPtr(void* pointer){
 
 /* This is a helper function that performs coalesce on the next block */
 void* coalesceForward(sf_free_header* head){
+	if(head ==NULL)
+		return ((void*)-1);
 	/* Jump to the next block */
-	sf_footer footer = headerTravelToFooter(head);
-	
+	sf_footer* footer = headerTravelToFooter(head);
 	if(head->next!=NULL){
 		
 		/* Calculate addresses for comparison*/
-		uintptr_t nextAddressBlock == (uintptr_t)addressOf(head->next);
-		uintptr_t thisAddressBlock  == (uintptr_t)((char*)footer+4);
+		uintptr_t nextAddressBlock = (uintptr_t)addressOf(head->next);
+		uintptr_t thisAddressBlock  = (uintptr_t)((char*)footer+8);
+		printf("\nIN CoalesceForward: nextAddressBlock= %lu, thisAddressBlock = %lu\n"
+			,(unsigned long)nextAddressBlock,(unsigned long)thisAddressBlock);
 		
 		/* Check if we can move to a next boundary block */
 		if((((uintptr_t)sf_sbrk(0)) - thisAddressBlock ) <0) return ((void*)-1); /* ERROR:exceed current heap */
 	
-
 		/* Check if the boundary calculations are equal */
 		if(nextAddressBlock==thisAddressBlock){
-			return mergeBlocks(head,(sf_free_header*)addressOf(head->next));
+			return (void*) merge(head,(sf_free_header*)addressOf(head->next));
+			
 		}
 	}
 	return head; /* Unable to coalesce forward */
@@ -452,15 +439,20 @@ void* coalesceBackward(sf_free_header* head){
 	if(head->prev!=NULL){
 		
 		/* Calculate addresses for comparison*/
-		uintptr_t prevAddressBlock == (uintptr_t)addressOf(headerTravelToFooter(head->prev));
-		uintptr_t thisAddressBlock  == (uintptr_t)((char*)head-4);
+		uintptr_t prevAddressBlock = (addressOf(headerTravelToFooter(head->prev))+8);
+		uintptr_t thisAddressBlock = (uintptr_t)((char*)head);
+
+		/*Test*/
+		printf("\nIN CoalesceBackward: prevAddressBlock= %lu, thisAddressBlock = %lu\n"
+			,(unsigned long)prevAddressBlock,(unsigned long)thisAddressBlock);
 		
 		/* Check if we can move to a prev boundary block */
 		if((thisAddressBlock ) <0) return ((void*)-1); /*ERROR:exceed current heap */
 
 		/* Check if the boundary calculations are equal */
-		if(nextAddressBlock==thisAddressBlock){
-			return mergeBlocks(head,(sf_free_header*)addressOf(head->next));
+		if(prevAddressBlock==thisAddressBlock){
+			return merge((sf_free_header*)addressOf(head->prev),head);
+			
 		}
 	}
 	return head; /* Unable to coalesce backwards */
@@ -475,17 +467,17 @@ void* merge(sf_free_header* block1, sf_free_header* block2){
 	sf_free_header* temp = block2->next; /* Temp pointer */
 
 	/* calculate stats for new block */
-	unsigned long block2Size = newFooter->block_size;
-	unsigned long block1Size = ((block1->header).block_size);
+	unsigned long block2Size = ((newFooter->block_size)<<4);
+	unsigned long block1Size = ((block1->header).block_size<<4);
 	unsigned long newSize = block2Size +block1Size; 
 
 	/* Update block 1*/
-	((block1->header).block_size) = newSize;
+	((block1->header).block_size) = (newSize>>4);
 	((block1->header).requested_size) = 0;
 	((block1->header).alloc) = 0;
 
 	/* update block 2*/
-	(newFooter->block_size) = newSize;
+	(newFooter->block_size) = (newSize>>4);
 	(newFooter->alloc) = 0;
 
 	/* Update links */
@@ -505,7 +497,16 @@ void* coalesce(sf_free_header* coalesceBlock){
 		return ((void*)-1);
 	else {
 		coalesceBlock = coalesceForward(coalesceBlock);
-		coalesceBlock = coalesceBlock(coalesceBlock);
+		if(coalesceBlock==((void*)-1)){
+			perror("Error: unable to coalesceForward");
+			return ((void*)-1);
+		}
+		coalesceBlock = coalesceBackward(coalesceBlock);
+		if(coalesceBlock==((void*)-1)){
+			perror("Error: unable to coalesceForward");
+			return ((void*)-1);
+
+		}
 		return coalesceBlock;
 	}
 
@@ -522,7 +523,6 @@ void* insertFreedBlockAddress(sf_free_header* insertNewFreedBlock){
 	if(freelist_head ==NULL){ /* CASE: No prev freelist*/
 		/* update status to free, then make it head of list*/
 		freelist_head = updateBlockToFree(insertNewFreedBlock);
-		freelist_current = freelist_head;
 		return freelist_head;
 
 	}else if( addressOf(freelist_head) > addressOf(insertNewFreedBlock)){
@@ -530,7 +530,7 @@ void* insertFreedBlockAddress(sf_free_header* insertNewFreedBlock){
 		updateBlockToFree(insertNewFreedBlock);    /* make block status free */
 		insertNewFreedBlock->next = freelist_head; 
 		freelist_head = insertNewFreedBlock;
-		return coalesceBlock(freelist_head);
+		return coalesce(freelist_head);
 	}
 	else{ /* CASE: new inserted block appears after the freelist head */
 		sf_free_header* curr = freelist_head;
@@ -547,7 +547,7 @@ void* insertFreedBlockAddress(sf_free_header* insertNewFreedBlock){
 				curr->next = insertNewFreedBlock;
 
 				/* Coalesce the blocks if we can */
-				return coalesceBlock(insertNewFreedBlock); /* coalesce and return */
+				return coalesce(insertNewFreedBlock); /* coalesce and return */
 
 			}else curr = curr->next;/*Continue iterating through list*/
 		}
@@ -555,7 +555,7 @@ void* insertFreedBlockAddress(sf_free_header* insertNewFreedBlock){
 		if((curr->next) == NULL){ /* curr = last node of the list*/
 			insertNewFreedBlock->prev = curr;
 			curr->next = insertNewFreedBlock;
-			return coalesceBlock(insertNewFreedBlock);
+			return coalesce(insertNewFreedBlock);
 		}
 	}
 }
@@ -564,19 +564,19 @@ void* insertFreedBlockAddress(sf_free_header* insertNewFreedBlock){
 
 /* A function that takes a sf_free_header * , and returns its address in heap */
 uintptr_t addressOf(sf_free_header* block){
-	return ((uintptr_t)((void*)freelist_head));
+	return ((uintptr_t)((void*)block));
 }
 
 /* A function that jumps from header struct to footer struct within one block entity */
 void* headerTravelToFooter(sf_free_header* start){
-	unsigned long blockSize = (start->header).block_size;
-	return ((void*) (((char*)start)+blockSize-4));
+	unsigned long blockSize = (((start->header).block_size)<<4);
+	return ((void*) (((char*)start)+blockSize-8));
 }
 
 /* A function that jumps from footer struct to header struct within one block entity */
 void* footerTravelToHeader(sf_footer* end){
-	unsigned long blockSize = end->block_size;
-	return ((void*) (((char*)end)+4-blockSize));
+	unsigned long blockSize = ((end->block_size)<<4);
+	return ((void*) (((char*)end)+8-blockSize));
 }
 
 
@@ -604,10 +604,9 @@ bool checkPointerToAllocatedBlockHead(void*ptr){
 	uintptr_t totalRangeOfBlock = ((uintptr_t)ptr + headerBlockSize); /*End of footer */
 	if( (topOfHeapAddress-totalRangeOfBlock) < 0) return false; /* Footer can't exist past top of heap */
 	uintptr_t footerAddress = totalRangeOfBlock-8; /* start of the presumed footer address*/
-	uintptr_t footerStructAddress = footerAddress + 4; /* start of the struct for the footer tag*/
 
 	/*Should now NOT cause a segfault*/
-	sf_footer* footerPtr = (void*)footerStructAddress;
+	sf_footer* footerPtr = (void*)footerAddress;
 	unsigned long footerBlockSize = ((footerPtr->block_size)<<4); 
 	unsigned long footerAlloc = (footerPtr->alloc); 
 	if(footerAlloc!=1) return false; /*should be an allocated block footer */
