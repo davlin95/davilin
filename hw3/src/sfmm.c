@@ -20,7 +20,7 @@ sf_free_header* freelist_head = NULL;
 #define PAGE_SIZE 4096
 
 void testPrint(){
-/*Test: test the following principles of block creation*/
+/*TEST CASE: COALESCING FUNCTIONS AND MERGE FUNCTION
 	printf("\n TESTING TESTPRINT:  \n");
 	alignHeap();
 	sf_free_header* head1 =createAlignedBlock(4);
@@ -36,7 +36,7 @@ void testPrint(){
 	printf("\nTesting COALESCING:\n");
 	 sf_free_header* testHeader = coalesce(head2);
 	 sf_blockprint(testHeader);
-	 freelist_head = NULL;
+	 freelist_head = NULL;*/
 
 }
 
@@ -65,12 +65,14 @@ void* sf_malloc(size_t size) {
 	if(freeblock == NULL){
 		initializeFreelistHeader(size);
 		freeblock = findFirstFitPolicy(size,freelist_head);
+
+		/*TESTCODE:
 		printf("\nTESTING FOUND BLOCK WITH BLOCKPRINT\n");
 		sf_blockprint(freelist_head);
 		printf("\nPRINTED FREEBLOCK\n");
 		printf("\nTESTING FOUND BLOCK WITH BLOCKPRINT\n");
 		sf_blockprint(freeblock);
-		printf("\nPRINTED FREEBLOCK\n");
+		printf("\nPRINTED FREEBLOCK\n");*/
 	}
 	updateBlockToAllocated(freeblock,size);
 	
@@ -128,34 +130,39 @@ void* sf_calloc(size_t nmemb, size_t size) {
 						/* Memory Policy Methods */
 
 /* A function that finds the free block according to the find next fit policy */
-void* findNextFitPolicy(size_t requested_size, sf_free_header* curr_head, sf_free_header* freelist_head){
+void* findNextFitPolicy(size_t requested_size){
 	/* pointer to an sf_free_head, in start of search*/
-	sf_free_header* anchor = curr_head; 
+	sf_free_header* anchor = freelist_current; /* Stopping point*/
 	sf_free_header* curr = anchor; 
 
-	/* Go through the link-list, up to one full cycle ending at the anchor point */
-	/* Stop if we find the requested size before then */
-	while ( ( (curr->next) != anchor) && (((curr->header).block_size)<requested_size) ){
+	if(curr == NULL)
+		return NULL; 
+	else if( ((curr->header.block_size)<<4) > requested_size )
+		return curr;
+
+	/* Iterate up to one full cycle. 
+	/* Stop if we find the requested size before then, or if we reach node before anchor point */
+	while (((curr->next) != anchor) && (((curr->header.block_size)<<4)<requested_size) ){
 		/* Reached end of list, continue search at the start of free_list */
-		if(( (curr->next) == NULL) && (freelist_head!= anchor)){
+		if(((curr->next)== NULL) && (freelist_head!=NULL) &&(freelist_head!= anchor)){
 			/* If we can continue iteration at the beginning of linked list*/
 			curr = freelist_head;
 		}
-		else if(( (curr->next) == NULL) && (freelist_head== anchor)){
+		else if(((curr->next) == NULL) && (freelist_head== anchor)){
 			/* Special Case: we are in a single node list. Don't continue iteration */
 			return NULL;
 		} 
 		else curr = (curr->next); /* Regular iteration through range of linked list */
 	}
+
 	/* Either we completed one cycle, and are at the node before anchor*/
 	/* or we have found our requested_size*/
-	if((curr->header).block_size >= requested_size)
+	if(curr->header.block_size >= requested_size)
 		return curr; /* Return a valid block */ 
 	else{
 		/* No block of size requested exists */
 		sf_sbrk(PAGE_SIZE);
 	} 
-
 }
 
 /* A helper function that helps execute the findFirstFitPolicy
@@ -342,7 +349,7 @@ int calculateRequestSize(size_t size){
 }
 
 
-						/* Methods Dealing With Heap Pointers */
+						/* METHODS: Heap Pointers */
 
 /* A function that takes the start pointer to a block, then returns the pointer to the
  * payload, by skipping the header block, then aligning. 
@@ -484,7 +491,6 @@ void* merge(sf_free_header* block1, sf_free_header* block2){
 	block1->next = temp;
 	if(temp!=NULL)
 		temp->prev = block1;
-
 }
 
 /*A function that performs coalescence if it is possible. 
@@ -509,13 +515,11 @@ void* coalesce(sf_free_header* coalesceBlock){
 		}
 		return coalesceBlock;
 	}
-
-
-	/* check next node if it's a freelist_current , if so make sure coalesce doesn't affect its status */
+	/* check next node if it's a freelist_current , if so make sure to update its status */
 }
 
-/* A function that inserts the freed block based on increasing order of address, 
- * instead of the LIFO policy. 
+/* A function that inserts the freed block (based on increasing order of address, 
+ * instead of the LIFO policy) into the freelist
  * @param insertNewFreedBlock: sf_header*. The new freed block to be inserted, address ascending order. 
  * @return the start of the free block that was inserted, and coalesced if possible. 
  */
@@ -524,7 +528,7 @@ void* insertFreedBlockAddress(sf_free_header* insertNewFreedBlock){
 		/* update status to free, then make it head of list*/
 		freelist_head = updateBlockToFree(insertNewFreedBlock);
 		return freelist_head;
-
+	
 	}else if( addressOf(freelist_head) > addressOf(insertNewFreedBlock)){
 		/* CASE: new freedblock address before current freelist head. Make freed block new head*/
 		updateBlockToFree(insertNewFreedBlock);    /* make block status free */
@@ -537,7 +541,6 @@ void* insertFreedBlockAddress(sf_free_header* insertNewFreedBlock){
 		/* Search thru list for where the new freed block belongs */
 		while((curr->next)!=NULL){
 			if(addressOf(curr->next) > addressOf(insertNewFreedBlock)){
-
 				/* Link new freed block into between the two nodes */
 				insertNewFreedBlock->next = curr->next;
 				insertNewFreedBlock->prev = curr;
@@ -614,7 +617,6 @@ bool checkPointerToAllocatedBlockHead(void*ptr){
 
 	return true; /* Passed all tests */
 }
-
 
 bool validateAddress(void* ptr){
 	/* Check null */
