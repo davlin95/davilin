@@ -1,7 +1,6 @@
+extern sf_free_header* freelist_current;
 /* This is a helper function that splits a free block into smaller blocks */
 void split( );
-
-
 
 /* This is a helper function that reads the allocation bit and determines if the block is free*/
 unsigned long readAllocatedBit(void* ptr);
@@ -23,6 +22,7 @@ void putLongAtPointer(void* pointer, unsigned long value);
 
 /*Helper function to read the value of the header at the heap */
 unsigned long  getLongAtPointer(void* pointer);
+
 
 /*Helper function that returns the payload*/
 void* getPayloadPtr(void* node);

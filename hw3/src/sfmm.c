@@ -73,6 +73,12 @@ void* sf_malloc(size_t size) {
 	if(freeblock == NULL){
 		initializeFreelistHeader(size);
 		freeblock = findFirstFitPolicy(size,freelist_head);
+		printf("\nTESTING FOUND BLOCK WITH BLOCKPRINT\n");
+		sf_blockprint(freelist_head);
+		printf("\nPRINTED FREEBLOCK\n");
+		printf("\nTESTING FOUND BLOCK WITH BLOCKPRINT\n");
+		sf_blockprint(freeblock);
+		printf("\nPRINTED FREEBLOCK\n");
 	}
 	updateBlockToAllocated(freeblock,size);
 	
@@ -95,7 +101,6 @@ void* sf_malloc(size_t size) {
 	/* return the payload */
 	void* payloadAddress = getPayloadPtr(freeblock);
 	return payloadAddress;
-
 }
 
 void sf_free(void *ptr) {
@@ -167,7 +172,7 @@ void* findNextFitPolicy(size_t requested_size, sf_free_header* curr_head, sf_fre
  * @param freelist_head: the header of the freelist.
  * @returns: sf_free_header* node containing the first block to fit the policy, else NULL. 
  */
-sf_free_header* findFirstFitPolicy(size_t requested_size, sf_free_header* head){
+sf_free_header* findFirstFitPolicy(unsigned long requested_size, sf_free_header* head){
 	/* Store the current node */
 	sf_free_header* curr = head; 
 
@@ -175,19 +180,22 @@ sf_free_header* findFirstFitPolicy(size_t requested_size, sf_free_header* head){
 	if(curr == NULL)
 		return NULL;
 
+	/*TESTCODE: FINDING SEGFAULT*/
+	printf("\nREQUESTED SIZE OF FIRSTFITPOLICY :%lu  CURRENT SIZE OF HEAD BLOCK: %d\n", requested_size, curr->header.block_size);
+
 	/* Check current head for the free block before going through the list */
-	if ( ( ( curr->header).block_size) >= requested_size){ 
+	if ((((curr->header).block_size)<<4) >= requested_size){ 
 		/* We've found the block */
 		return curr;
 	}
 
 	/* first block is not a fit, go through the link-list, looking for the requested size*/
-	while (((curr->next) != NULL) && (((curr->header).block_size) < requested_size) ){
+	while (((curr->next) != NULL) && ( (((curr->header).block_size)<<4) < requested_size) ){
 		curr = (curr->next);
 	}
 
 	/* Either we are at the last node of the free list, or we have found our requested_size*/
-	if(((curr->header).block_size)>= requested_size)
+	if((((curr->header).block_size<<4))>= requested_size)
 		return curr; /* Return node containing the valid block */ 
 	else
 		return NULL; /* No block of size requested exists */
@@ -200,17 +208,41 @@ sf_free_header* findFirstFitPolicy(size_t requested_size, sf_free_header* head){
  */
 void updateBlockToAllocated(sf_free_header* block,size_t size){
 	/* Get access to footer struct */
-	unsigned long blockSize = (block->header).block_size; /* Grab Block size  */
+	unsigned long blockSize = (((block->header).block_size)<<4); /* Grab Block size  */
 	void* endOfBlock = (void*)(((char*)block) + blockSize); /* ptr to end of block */
-	void* footerStartPtr = (((char*)endOfBlock)-8); /* ptr to beginning of footer */
+	void* footerStartPtr = (((char*)endOfBlock)-4); /* ptr to beginning of footer struct */
 	sf_footer* footer = footerStartPtr;
 
 	/* Update header struct */
 	((block->header).alloc) = 1;
-	(block->header).requested_size = (size>>4);
+	(block->header).requested_size = size;
 
 	/* Update footer struct */
 	(footer->alloc) = 1;
+}
+
+/*A function that updates the status of the newly freed block from allocated to free. However,
+ * Other functions must handle the coalescing and linking of this block to the freelist after 
+ * this function*/
+void* updateBlockToFree(sf_free_header* allocatedBlock){
+	if(allocatedBlock == NULL)
+		return ((void*)-1);
+	/* Get access to footer struct */
+	unsigned long blockSize = (((allocatedBlock->header).block_size)<<4); /* Grab Block size  */
+	void* endOfBlock = (void*)(((char*)allocatedBlock) + blockSize); /* ptr to end of block */
+	void* footerStartPtr = (((char*)endOfBlock)-4); /* ptr to beginning of footer struct */
+	sf_footer* footer = footerStartPtr;
+
+	/* Update header struct */
+	((allocatedBlock->header).alloc) = 0;
+	(allocatedBlock->header).requested_size = 0;
+
+
+	/* Update footer struct */
+	(footer->alloc) = 0;
+
+	return (void*)allocatedBlock;
+
 }
 
 /* A function that requests for more free heap blocks to be inserted into the explicit free list
@@ -235,6 +267,7 @@ void initializeFreelistHeader(size_t size){
 	(newBlock->next) = freelist_head;
 	freelist_head = newBlock;	
 }
+
 
 				/*Methods to Create Blocks*/
 
@@ -302,11 +335,6 @@ void* createAlignedBlock(int multipleOfPageSize){
 		perror(strerror(errno));
 		return NULL;
 	}
-
-	/*Test
-	assert(footerStartPtr == topOfHeap);
-	assert(endOfHeadPayloadBlock == topOfHeap);*/
-
 	void* footerEndPtr = insertFooter(footerStartPtr,0,wholeBlockSize);
 	return headPtr;
 }
@@ -392,23 +420,168 @@ void* alignPtr(void* pointer){
 	return pointer;
 }
 
-
-
 			/* To Be Implemented Methods */
 
 /* This is a helper function that performs coalesce on the next block */
-void* coalesceNextBlock(sf_header* sf_header){
-	/* Go through this block's header boundary tag */
+void* coalesceForward(sf_free_header* head){
 	/* Jump to the next block */
-	/* Store next block's size*/
-	/* Add next block size to this block's size */
-	/* Go to next block's footer and update */
-	/* the offset to the next block size + this block size */
-	/* Return this block's pointer */
+	sf_footer footer = headerTravelToFooter(head);
+	
+	if(head->next!=NULL){
+		
+		/* Calculate addresses for comparison*/
+		uintptr_t nextAddressBlock == (uintptr_t)addressOf(head->next);
+		uintptr_t thisAddressBlock  == (uintptr_t)((char*)footer+4);
+		
+		/* Check if we can move to a next boundary block */
+		if((((uintptr_t)sf_sbrk(0)) - thisAddressBlock ) <0) return ((void*)-1); /* ERROR:exceed current heap */
+	
+
+		/* Check if the boundary calculations are equal */
+		if(nextAddressBlock==thisAddressBlock){
+			return mergeBlocks(head,(sf_free_header*)addressOf(head->next));
+		}
+	}
+	return head; /* Unable to coalesce forward */
+}
+
+/* This is a helper function that performs coalesce on the previous block */
+void* coalesceBackward(sf_free_header* head){	
+	if(head==NULL)
+		return ((void*)-1);
+	if(head->prev!=NULL){
+		
+		/* Calculate addresses for comparison*/
+		uintptr_t prevAddressBlock == (uintptr_t)addressOf(headerTravelToFooter(head->prev));
+		uintptr_t thisAddressBlock  == (uintptr_t)((char*)head-4);
+		
+		/* Check if we can move to a prev boundary block */
+		if((thisAddressBlock ) <0) return ((void*)-1); /*ERROR:exceed current heap */
+
+		/* Check if the boundary calculations are equal */
+		if(nextAddressBlock==thisAddressBlock){
+			return mergeBlocks(head,(sf_free_header*)addressOf(head->next));
+		}
+	}
+	return head; /* Unable to coalesce backwards */
+}
+
+/* This is a helper function that merges the two free blocks. Inputs assumed to be mergeable:
+ * meaning that the two blocks are adjacent in memory, and that they're both free blocks. 
+*/
+void* merge(sf_free_header* block1, sf_free_header* block2){
+	if((block1==NULL)||block2==NULL) return ((void*)-1);
+	sf_footer* newFooter = headerTravelToFooter(block2); /* Travel to footer struct */
+	sf_free_header* temp = block2->next; /* Temp pointer */
+
+	/* calculate stats for new block */
+	unsigned long block2Size = newFooter->block_size;
+	unsigned long block1Size = ((block1->header).block_size);
+	unsigned long newSize = block2Size +block1Size; 
+
+	/* Update block 1*/
+	((block1->header).block_size) = newSize;
+	((block1->header).requested_size) = 0;
+	((block1->header).alloc) = 0;
+
+	/* update block 2*/
+	(newFooter->block_size) = newSize;
+	(newFooter->alloc) = 0;
+
+	/* Update links */
+	block1->next = temp;
+	if(temp!=NULL)
+		temp->prev = block1;
+
+}
+
+/*A function that performs coalescence if it is possible. 
+ * @param freeblock: sf_free_header*.
+ * @return: the beginning pointer to the new coalesced block if possible. 
+ *
+ */
+void* coalesce(sf_free_header* coalesceBlock){
+	if(coalesceBlock==NULL)
+		return ((void*)-1);
+	else {
+		coalesceBlock = coalesceForward(coalesceBlock);
+		coalesceBlock = coalesceBlock(coalesceBlock);
+		return coalesceBlock;
+	}
+
+
+	/* check next node if it's a freelist_current , if so make sure coalesce doesn't affect its status */
+}
+
+/* A function that inserts the freed block based on increasing order of address, 
+ * instead of the LIFO policy. 
+ * @param insertNewFreedBlock: sf_header*. The new freed block to be inserted, address ascending order. 
+ * @return the start of the free block that was inserted, and coalesced if possible. 
+ */
+void* insertFreedBlockAddress(sf_free_header* insertNewFreedBlock){
+	if(freelist_head ==NULL){ /* CASE: No prev freelist*/
+		/* update status to free, then make it head of list*/
+		freelist_head = updateBlockToFree(insertNewFreedBlock);
+		freelist_current = freelist_head;
+		return freelist_head;
+
+	}else if( addressOf(freelist_head) > addressOf(insertNewFreedBlock)){
+		/* CASE: new freedblock address before current freelist head. Make freed block new head*/
+		updateBlockToFree(insertNewFreedBlock);    /* make block status free */
+		insertNewFreedBlock->next = freelist_head; 
+		freelist_head = insertNewFreedBlock;
+		return coalesceBlock(freelist_head);
+	}
+	else{ /* CASE: new inserted block appears after the freelist head */
+		sf_free_header* curr = freelist_head;
+		/* Search thru list for where the new freed block belongs */
+		while((curr->next)!=NULL){
+			if(addressOf(curr->next) > addressOf(insertNewFreedBlock)){
+
+				/* Link new freed block into between the two nodes */
+				insertNewFreedBlock->next = curr->next;
+				insertNewFreedBlock->prev = curr;
+
+				/* Break previous links, by attaching them to new freed block */
+				((curr-> next)->prev) = insertNewFreedBlock;
+				curr->next = insertNewFreedBlock;
+
+				/* Coalesce the blocks if we can */
+				return coalesceBlock(insertNewFreedBlock); /* coalesce and return */
+
+			}else curr = curr->next;/*Continue iterating through list*/
+		}
+		/* reached end of free list without finding a block of higher address */
+		if((curr->next) == NULL){ /* curr = last node of the list*/
+			insertNewFreedBlock->prev = curr;
+			curr->next = insertNewFreedBlock;
+			return coalesceBlock(insertNewFreedBlock);
+		}
+	}
+}
+
+			/* SIMPLE HELPER METHODS */
+
+/* A function that takes a sf_free_header * , and returns its address in heap */
+uintptr_t addressOf(sf_free_header* block){
+	return ((uintptr_t)((void*)freelist_head));
+}
+
+/* A function that jumps from header struct to footer struct within one block entity */
+void* headerTravelToFooter(sf_free_header* start){
+	unsigned long blockSize = (start->header).block_size;
+	return ((void*) (((char*)start)+blockSize-4));
+}
+
+/* A function that jumps from footer struct to header struct within one block entity */
+void* footerTravelToHeader(sf_footer* end){
+	unsigned long blockSize = end->block_size;
+	return ((void*) (((char*)end)+4-blockSize));
 }
 
 
 			/* HELPER METHODS FOR SF_FREE() */
+
 bool checkPointerToAllocatedBlockHead(void*ptr){
 	/* Check for size of ptr, avoid seg fault*/
 	uintptr_t topOfHeapAddress = ((uintptr_t) sf_sbrk(0)); 
