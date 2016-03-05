@@ -20,36 +20,12 @@ sf_free_header* freelist_head = NULL;
 sf_free_header* freelist_current = NULL;
 #define PAGE_SIZE 4096
 
-
-void testPrint(){
-/*TEST CASE: COALESCING FUNCTIONS AND MERGE FUNCTION
-	printf("\n TESTING TESTPRINT:  \n");
-	alignHeap();
-	sf_free_header* head1 =createAlignedBlock(4);
-	sf_free_header* head2 =createAlignedBlock(2);
-	sf_free_header* head3 =createAlignedBlock(6);
-
-	freelist_head = head1;
-	freelist_head->next = head2;
-	head2->next = head3;
-
-	head2->prev = freelist_head;
-	head3->prev = head2;
-	printf("\nTesting COALESCING:\n");
-	 sf_free_header* testHeader = coalesce(head2);
-	 sf_blockprint(testHeader);
-	 freelist_head = NULL;*/
-
-}
-
 			/* Main Methods */
 /*
  * A function that implements malloc
  * @param size : size of bytes to be malloced. 
  */
 void* sf_malloc(size_t size) {
-	testPrint();
-
 	/*Upper limit of size is 4GB */
 	unsigned long long maxSize = (1024*1024*1024);
 	maxSize = maxSize * 4;
@@ -67,14 +43,6 @@ void* sf_malloc(size_t size) {
 	if(freeblock == NULL){
 		initializeFreelistHeader(size);
 		freeblock = findFirstFitPolicy(size,freelist_head);
-
-		/*TESTCODE:
-		printf("\nTESTING FOUND BLOCK WITH BLOCKPRINT\n");
-		sf_blockprint(freelist_head);
-		printf("\nPRINTED FREEBLOCK\n");
-		printf("\nTESTING FOUND BLOCK WITH BLOCKPRINT\n");
-		sf_blockprint(freeblock);
-		printf("\nPRINTED FREEBLOCK\n");*/
 	}
 	updateBlockToAllocated(freeblock,size);
 	
@@ -93,8 +61,8 @@ void* sf_malloc(size_t size) {
 	}
 	
 	/* return the payload */
-	void* payloadAddress = getPayloadPtr(freeblock);
-	return payloadAddress;
+	return getPayloadPtr(freeblock);
+	
 }
 
 void sf_free(void *ptr) {
@@ -305,6 +273,7 @@ void* createAlignedBlock(int multipleOfPageSize){
 	int headAndPayload =  wholeBlockSize -8;      /* -8 for span of footer boundary */
 	void* headPtr = sf_sbrk(headAndPayload); 	 /* Ask for space*/
 	if(headPtr == ((void*)-1)){
+		errno = ENOMEM;
 		perror(strerror(errno));
 		return NULL;
 	}
@@ -635,7 +604,6 @@ unsigned long readRequestedSize(void* ptr){
 /* Helper function that determines whether the address of the pointer is aligned, by modulo 16 */
 bool isAligned(void* address){
 	uintptr_t addressInt = ((uintptr_t)address);
-	printf("\n %p isAligned() modulo 16 is: %lu\n", address, (addressInt%16));
 	if( addressInt % 16 ==0)
 		return true;
 	else return false;

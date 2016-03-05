@@ -11,9 +11,7 @@
 #define VALUE2_VALUE 0xDEADBEEFF00D
 
 #define press_to_cont() do { \
-    printf("Press Enter to Continue"); \
     while(getchar() != '\n'); \
-    printf("\n"); \
 } while(0)
 
 #define null_check(ptr, size) do { \
