@@ -99,8 +99,13 @@ int main(int argc, char *argv[]) {
 
     // Allocate more memory
     printf("=== Test7: 8192 byte allocation ===\n");
-    void *memory = sf_malloc(8192);
+    void *memory = sf_calloc(4096,1);
     sf_varprint(memory);
+    perror("Testing calloc");
+    sf_snapshot(true);
+    memory = sf_malloc(8192);
+    sf_varprint(memory);
+    perror("Testing free");
     sf_free(memory);
     //press_to_cont();
 

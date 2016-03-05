@@ -1,4 +1,3 @@
-extern sf_free_header* freelist_current;
 
 /* This is a helper function that splits a free block into smaller blocks */
 void split( );
@@ -67,10 +66,8 @@ bool isAligned(void* address);
 void* getNextBlock();
 
 
-
 /* Helper Function: Gets size of the next block */
 void getNextBlockSize();
-
 
 /*HelperFunction: Get size of the previous block */
 void getPrevBlockSize();
@@ -79,7 +76,7 @@ void getPrevBlockSize();
 void initializeFreelistHeader(size_t size);
 
 /* Function that helps find the first fit policy node */
-void* findNextFitPolicy(size_t requested_size, sf_free_header* curr_head, sf_free_header* freelist_head);
+void* findNextFitPolicy(size_t requested_size);
 
 /* Function that helps find the firstfit policy*/
 sf_free_header* findFirstFitPolicy(size_t requested_size, sf_free_header* head);

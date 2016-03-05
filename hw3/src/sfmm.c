@@ -17,7 +17,9 @@
  * which will allow you to pass the address to sf_snapshot in a different file.
  */
 sf_free_header* freelist_head = NULL;
+sf_free_header* freelist_current = NULL;
 #define PAGE_SIZE 4096
+
 
 void testPrint(){
 /*TEST CASE: COALESCING FUNCTIONS AND MERGE FUNCTION
@@ -88,7 +90,6 @@ void* sf_malloc(size_t size) {
 		freelist_head = createAlignedBlock(1);
 		freelist_head->next = NULL;
 		freelist_head->prev = NULL; 
-		printf("\nPOINTER TO PAYLOAD OF FREELISTHEAD: %p\n",getPayloadPtr(freelist_head));
 	}
 	
 	/* return the payload */
@@ -122,8 +123,9 @@ void* sf_realloc(void *ptr, size_t size) {
 }
 
 void* sf_calloc(size_t nmemb, size_t size) {
-
-    return NULL;
+	unsigned long totalSize = (nmemb*size);
+	void* payload = sf_malloc(totalSize);
+	return memset(payload,0, totalSize);
 }
 
 
@@ -140,7 +142,7 @@ void* findNextFitPolicy(size_t requested_size){
 	else if( ((curr->header.block_size)<<4) > requested_size )
 		return curr;
 
-	/* Iterate up to one full cycle. 
+	/* Iterate up to one full cycle. */
 	/* Stop if we find the requested size before then, or if we reach node before anchor point */
 	while (((curr->next) != anchor) && (((curr->header.block_size)<<4)<requested_size) ){
 		/* Reached end of list, continue search at the start of free_list */
@@ -161,8 +163,9 @@ void* findNextFitPolicy(size_t requested_size){
 		return curr; /* Return a valid block */ 
 	else{
 		/* No block of size requested exists */
-		sf_sbrk(PAGE_SIZE);
+		return NULL;
 	} 
+
 }
 
 /* A helper function that helps execute the findFirstFitPolicy
@@ -177,9 +180,6 @@ sf_free_header* findFirstFitPolicy(unsigned long requested_size, sf_free_header*
 	/*Base case*/
 	if(curr == NULL)
 		return NULL;
-
-	/*TESTCODE: FINDING SEGFAULT*/
-	printf("\nREQUESTED SIZE OF FIRSTFITPOLICY :%lu  CURRENT SIZE OF HEAD BLOCK: %d\n", requested_size, curr->header.block_size<<4);
 
 	/* Check current head for the free block before going through the list */
 	if ((((curr->header).block_size)<<4) >= requested_size){ 
@@ -233,7 +233,6 @@ void* updateBlockToFree(sf_free_header* allocatedBlock){
 	((allocatedBlock->header).alloc) = 0;
 	(allocatedBlock->header).requested_size = 0;
 
-
 	/* Update footer struct */
 	(footer->alloc) = 0;
 
@@ -251,9 +250,6 @@ void initializeFreelistHeader(size_t size){
 	/* extra size for padding */
 	if( (requestSize - size) < (4*sizeof(unsigned long))) /*Room for padding/ header tags*/
 		requestSize = requestSize + PAGE_SIZE; /* Increment by whole new multiple of page_size*/
-
-	/*Test*/
-	printf("\nrequestedSize in initializeFreelistHeader() is %d\n", requestSize);
 
 	/* expand heap to create new block */
 	unsigned long multipleOfPageSize = requestSize/4096;
@@ -312,13 +308,12 @@ void* createAlignedBlock(int multipleOfPageSize){
 		perror(strerror(errno));
 		return NULL;
 	}
-	void* topOfHeap = sf_sbrk(0);                        /* top of heap*/
 
 	/*TEST CODE
 	void* endOfHeadPayloadBlock =(void*) ((char*)headPtr + headAndPayload);*/
 
 	/*Initialize header */
-	void* endOfHeadPayloadPtr = insertHeader(headPtr,0,wholeBlockSize,0); 
+	insertHeader(headPtr,0,wholeBlockSize,0); 
 
 	/*Initialize Footer */ 		   
 	void* footerStartPtr = sf_sbrk(8);
@@ -326,7 +321,7 @@ void* createAlignedBlock(int multipleOfPageSize){
 		perror(strerror(errno));
 		return NULL;
 	}
-	void* footerEndPtr = insertFooter(footerStartPtr,0,wholeBlockSize);
+	insertFooter(footerStartPtr,0,wholeBlockSize);
 	return headPtr;
 }
 
@@ -400,13 +395,9 @@ void* alignPtr(void* pointer){
 	if( pointerAddress % 16 ==0)
 		return pointer;
 	else{
-		printf("\nIN alignPtr(): \n");
 		int remainder = pointerAddress%16;
-		printf("\nremainder is:  %d\n pointerAddress is : %p \n",remainder, pointer);
 		int offset = 16-remainder;
-		printf("\noffset is: %d \n",offset);
 		pointer = (void*)(((char*)pointer)+offset);
-		printf("\n Aligned pointer is : %p \n",pointer);
 	}
 	return pointer;
 }
@@ -424,8 +415,6 @@ void* coalesceForward(sf_free_header* head){
 		/* Calculate addresses for comparison*/
 		uintptr_t nextAddressBlock = (uintptr_t)addressOf(head->next);
 		uintptr_t thisAddressBlock  = (uintptr_t)((char*)footer+8);
-		printf("\nIN CoalesceForward: nextAddressBlock= %lu, thisAddressBlock = %lu\n"
-			,(unsigned long)nextAddressBlock,(unsigned long)thisAddressBlock);
 		
 		/* Check if we can move to a next boundary block */
 		if((((uintptr_t)sf_sbrk(0)) - thisAddressBlock ) <0) return ((void*)-1); /* ERROR:exceed current heap */
@@ -433,7 +422,6 @@ void* coalesceForward(sf_free_header* head){
 		/* Check if the boundary calculations are equal */
 		if(nextAddressBlock==thisAddressBlock){
 			return (void*) merge(head,(sf_free_header*)addressOf(head->next));
-			
 		}
 	}
 	return head; /* Unable to coalesce forward */
@@ -448,10 +436,6 @@ void* coalesceBackward(sf_free_header* head){
 		/* Calculate addresses for comparison*/
 		uintptr_t prevAddressBlock = (addressOf(headerTravelToFooter(head->prev))+8);
 		uintptr_t thisAddressBlock = (uintptr_t)((char*)head);
-
-		/*Test*/
-		printf("\nIN CoalesceBackward: prevAddressBlock= %lu, thisAddressBlock = %lu\n"
-			,(unsigned long)prevAddressBlock,(unsigned long)thisAddressBlock);
 		
 		/* Check if we can move to a prev boundary block */
 		if((thisAddressBlock ) <0) return ((void*)-1); /*ERROR:exceed current heap */
@@ -491,6 +475,7 @@ void* merge(sf_free_header* block1, sf_free_header* block2){
 	block1->next = temp;
 	if(temp!=NULL)
 		temp->prev = block1;
+	return block1;
 }
 
 /*A function that performs coalescence if it is possible. 
@@ -504,12 +489,10 @@ void* coalesce(sf_free_header* coalesceBlock){
 	else {
 		coalesceBlock = coalesceForward(coalesceBlock);
 		if(coalesceBlock==((void*)-1)){
-			perror("Error: unable to coalesceForward");
 			return ((void*)-1);
 		}
 		coalesceBlock = coalesceBackward(coalesceBlock);
 		if(coalesceBlock==((void*)-1)){
-			perror("Error: unable to coalesceForward");
 			return ((void*)-1);
 
 		}
@@ -561,6 +544,7 @@ void* insertFreedBlockAddress(sf_free_header* insertNewFreedBlock){
 			return coalesce(insertNewFreedBlock);
 		}
 	}
+	return coalesce(insertNewFreedBlock);
 }
 
 			/* SIMPLE HELPER METHODS */
@@ -657,26 +641,6 @@ bool isAligned(void* address){
 	else return false;
 }
 
-/* A function that writes the requested size into the pointer's header 
- * @param size: the size of the block 
- * @param ptr : the pointer of the block.
-*/
-void writeRequestedSize(unsigned long size, void* ptr){
-	/* Take the requested_size value and shift it to the request_size area */
-	unsigned long max = 1;
-	max = (max << 32);
-	if(size < max){
-		unsigned long requested_size = (size<<32);
-		/* Convert the pointer, then retrieve its contents, then set it*/
-		sf_header header;
-		header.requested_size = size;
-		memcpy(ptr,&header, sizeof(header));
-
-		/*
-		addressContents = (addressContents & 0x00000000ffffffff); 
-		*((unsigned long*)ptr) = (addressContents | requested_size);*/
-	}
-}
 /* A function that reads the block size from the block header */
 unsigned long readBlockSize(void* ptr){
 	/* Initialize Vars */
