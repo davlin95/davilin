@@ -1,0 +1,1516 @@
+HW2 Results
+Name: David Lin
+SBUID: 110044921
+Email: 
+
+All requested files (1 pt)                                            Score: 2 / 2	All Necessary files found
+Makefile compiles with flags -Wall -Werror (4pts)                     Score: 2 / 2	Makefile compiles with flags
+=-=-=-=-=-=-=-= TESTING UTFCONVERTER.C SOURCE FILE =-=-=-=-=-=-=-=
+Valgrind -- Worth 3 points
+./valgrind --leak-check=full --tool=memcheck --track-fds=yes a.out              -- GOOD
+
+Help -- Each case is worth 1 point
+./a.out -h                                                                      -- GOOD
+
+Testing Valid Cases
+(These should all return a value)
+
+Fixed -- Each case is worth 7.5 points
+./a.out -e UTF-16LE utf-8.txt 8to16LEg.txt                                      -- GOOD
+./a.out -e UTF-16LE utf-8-special.txt 8to16LEsg.txt                             -- GOOD
+Case results: 15.0 / 15.0
+
+Generic -- Each case is worth 1.5 points
+./a.out -e UTF-16BE utf-8.txt 8to16BEg.txt                                      -- GOOD
+./a.out -e UTF-16BE utf-8-special.txt 8to16BEsg.txt                             -- GOOD
+./a.out -e UTF-8 utf-16LE.txt 16LE8g.txt                                        -- GOOD
+./a.out -e UTF-8 utf-16LE-special.txt 16LE8sg.txt                               -- GOOD
+./a.out -e UTF-8 utf-16BE.txt 16BE8g.txt                                        -- GOOD
+./a.out -e UTF-8 utf-16BE-special.txt 16BE8sg.txt                               -- GOOD
+./a.out -e UTF-16BE utf-16LE.txt 16LE16BEg.txt                                  -- GOOD
+./a.out -e UTF-16BE utf-16LE-special.txt 16LE16BEsg.txt                         -- GOOD
+Case results: 12.0 / 12.0
+
+Verbose -- Each case is worth 1.0 points
+./a.out -v -e UTF-16LE utf-8.txt 8to16LEv1.txt                                  -- BAD
+Failed: Verbose UTF-8 to UTF-16LE verbosity did not match
+Correct Output:
+|     A     |     1     |    U+0041 |	**Didn't Match**
+|     B     |     1     |    U+0042 |	**Didn't Match**
+|     C     |     1     |    U+0043 |	**Didn't Match**
+|     D     |     1     |    U+0044 |	**Didn't Match**
+|     E     |     1     |    U+0045 |	**Didn't Match**
+|     F     |     1     |    U+0046 |	**Didn't Match**
+|     G     |     1     |    U+0047 |	**Didn't Match**
+|     H     |     1     |    U+0048 |	**Didn't Match**
+|     I     |     1     |    U+0049 |	**Didn't Match**
+|     J     |     1     |    U+004a |	**Didn't Match**
+|     K     |     1     |    U+004b |	**Didn't Match**
+|     L     |     1     |    U+004c |	**Didn't Match**
+|     M     |     1     |    U+004d |	**Didn't Match**
+|     N     |     1     |    U+004e |	**Didn't Match**
+|     O     |     1     |    U+004f |	**Didn't Match**
+|     P     |     1     |    U+0050 |	**Didn't Match**
+|     Q     |     1     |    U+0051 |	**Didn't Match**
+|     R     |     1     |    U+0052 |	**Didn't Match**
+|     S     |     1     |    U+0053 |	**Didn't Match**
+|     T     |     1     |    U+0054 |	**Didn't Match**
+|     U     |     1     |    U+0055 |	**Didn't Match**
+|     V     |     1     |    U+0056 |	**Didn't Match**
+|     W     |     1     |    U+0057 |	**Didn't Match**
+|     X     |     1     |    U+0058 |	**Didn't Match**
+|     Y     |     1     |    U+0059 |	**Didn't Match**
+|     Z     |     1     |    U+005a |	**Didn't Match**
+|   none    |     1     |    U+000a |	**Didn't Match**
+|     1     |     1     |    U+0031 |	**Didn't Match**
+|     2     |     1     |    U+0032 |	**Didn't Match**
+|     3     |     1     |    U+0033 |	**Didn't Match**
+|     4     |     1     |    U+0034 |	**Didn't Match**
+|     5     |     1     |    U+0035 |	**Didn't Match**
+|     6     |     1     |    U+0036 |	**Didn't Match**
+|     7     |     1     |    U+0037 |	**Didn't Match**
+|     8     |     1     |    U+0038 |	**Didn't Match**
+|     9     |     1     |    U+0039 |	**Didn't Match**
+|     0     |     1     |    U+0030 |	**Didn't Match**
+|   none    |     1     |    U+000a |	**Didn't Match**
+|     a     |     1     |    U+0061 |	**Didn't Match**
+|     b     |     1     |    U+0062 |	**Didn't Match**
+|     c     |     1     |    U+0063 |	**Didn't Match**
+|     d     |     1     |    U+0064 |	**Didn't Match**
+|     e     |     1     |    U+0065 |	**Didn't Match**
+|     f     |     1     |    U+0066 |	**Didn't Match**
+|     g     |     1     |    U+0067 |	**Didn't Match**
+|     h     |     1     |    U+0068 |	**Didn't Match**
+|     i     |     1     |    U+0069 |	**Didn't Match**
+|     j     |     1     |    U+006a |	**Didn't Match**
+|     k     |     1     |    U+006b |	**Didn't Match**
+|     l     |     1     |    U+006c |	**Didn't Match**
+|     m     |     1     |    U+006d |	**Didn't Match**
+|     n     |     1     |    U+006e |	**Didn't Match**
+|     o     |     1     |    U+006f |	**Didn't Match**
+|     p     |     1     |    U+0070 |	**Didn't Match**
+|     q     |     1     |    U+0071 |	**Didn't Match**
+|     r     |     1     |    U+0072 |	**Didn't Match**
+|     s     |     1     |    U+0073 |	**Didn't Match**
+|     t     |     1     |    U+0074 |	**Didn't Match**
+|     u     |     1     |    U+0075 |	**Didn't Match**
+|     v     |     1     |    U+0076 |	**Didn't Match**
+|     w     |     1     |    U+0077 |	**Didn't Match**
+|     x     |     1     |    U+0078 |	**Didn't Match**
+|     y     |     1     |    U+0079 |	**Didn't Match**
+|     z     |     1     |    U+007a |	**Didn't Match**
+|   none    |     1     |    U+000a |	**Didn't Match**
+|   none    |     1     |    U+0009 |	**Didn't Match**
+|           |     1     |    U+0020 |	**Didn't Match**
+|     !     |     1     |    U+0021 |	**Didn't Match**
+|     !     |     1     |    U+0021 |	**Didn't Match**
+|     @     |     1     |    U+0040 |	**Didn't Match**
+|     #     |     1     |    U+0023 |	**Didn't Match**
+|     $     |     1     |    U+0024 |	**Didn't Match**
+|     %     |     1     |    U+0025 |	**Didn't Match**
+|     ^     |     1     |    U+005e |	**Didn't Match**
+|     &     |     1     |    U+0026 |	**Didn't Match**
+|     *     |     1     |    U+002a |	**Didn't Match**
+|     (     |     1     |    U+0028 |	**Didn't Match**
+|     )     |     1     |    U+0029 |	**Didn't Match**
+|     -     |     1     |    U+002d |	**Didn't Match**
+|     _     |     1     |    U+005f |	**Didn't Match**
+|     +     |     1     |    U+002b |	**Didn't Match**
+|     =     |     1     |    U+003d |	**Didn't Match**
+|     ?     |     1     |    U+003f |	**Didn't Match**
+|     /     |     1     |    U+002f |	**Didn't Match**
+|     [     |     1     |    U+005b |	**Didn't Match**
+|     ]     |     1     |    U+005d |	**Didn't Match**
+|     {     |     1     |    U+007b |	**Didn't Match**
+|     }     |     1     |    U+007d |	**Didn't Match**
+|     \     |     1     |    U+005c |	**Didn't Match**
+|     ~     |     1     |    U+007e |	**Didn't Match**
+|     `     |     1     |    U+0060 |	**Didn't Match**
+|     ,     |     1     |    U+002c |	**Didn't Match**
+|     .     |     1     |    U+002e |	**Didn't Match**
+|     ;     |     1     |    U+003b |	**Didn't Match**
+|     :     |     1     |    U+003a |	**Didn't Match**
+|     '     |     1     |    U+0027 |	**Didn't Match**
+|     "     |     1     |    U+0022 |	**Didn't Match**
+|   none    |     1     |    U+000a |	**Didn't Match**
+Output written successfully.
+
+
+Your Output:
+	**Didn't Match**
+./a.out -v -e UTF-16LE utf-8-special.txt 8to16LEsv1.txt                         -- BAD
+Failed: Verbose UTF-8-special to UTF-16LE verbosity did not match
+Correct Output:
+|     A     |     1     |    U+0041 |	**Didn't Match**
+|   none    |     2     |    U+00c5 |	**Didn't Match**
+|   none    |     2     |    U+00c1 |	**Didn't Match**
+|   none    |     2     |    U+00c2 |	**Didn't Match**
+|   none    |     2     |    U+00c0 |	**Didn't Match**
+|   none    |     2     |    U+00c3 |	**Didn't Match**
+|   none    |     2     |    U+00c4 |	**Didn't Match**
+|   none    |     1     |    U+000a |	**Didn't Match**
+|     C     |     1     |    U+0043 |	**Didn't Match**
+|     i     |     1     |    U+0069 |	**Didn't Match**
+|     e     |     1     |    U+0065 |	**Didn't Match**
+|     n     |     1     |    U+006e |	**Didn't Match**
+|     c     |     1     |    U+0063 |	**Didn't Match**
+|     i     |     1     |    U+0069 |	**Didn't Match**
+|     a     |     1     |    U+0061 |	**Didn't Match**
+|     s     |     1     |    U+0073 |	**Didn't Match**
+|           |     1     |    U+0020 |	**Didn't Match**
+|     d     |     1     |    U+0064 |	**Didn't Match**
+|     e     |     1     |    U+0065 |	**Didn't Match**
+|           |     1     |    U+0020 |	**Didn't Match**
+|     l     |     1     |    U+006c |	**Didn't Match**
+|     a     |     1     |    U+0061 |	**Didn't Match**
+|           |     1     |    U+0020 |	**Didn't Match**
+|     C     |     1     |    U+0043 |	**Didn't Match**
+|     o     |     1     |    U+006f |	**Didn't Match**
+|     m     |     1     |    U+006d |	**Didn't Match**
+|     p     |     1     |    U+0070 |	**Didn't Match**
+|     u     |     1     |    U+0075 |	**Didn't Match**
+|     t     |     1     |    U+0074 |	**Didn't Match**
+|     a     |     1     |    U+0061 |	**Didn't Match**
+|     c     |     1     |    U+0063 |	**Didn't Match**
+|     i     |     1     |    U+0069 |	**Didn't Match**
+|   none    |     2     |    U+00f3 |	**Didn't Match**
+|     n     |     1     |    U+006e |	**Didn't Match**
+|   none    |     1     |    U+0009 |	**Didn't Match**
+|   none    |     4     |   U+1f600 |	**Didn't Match**
+|   none    |     1     |    U+0009 |	**Didn't Match**
+|     S     |     1     |    U+0053 |	**Didn't Match**
+|     p     |     1     |    U+0070 |	**Didn't Match**
+|     a     |     1     |    U+0061 |	**Didn't Match**
+|     n     |     1     |    U+006e |	**Didn't Match**
+|     i     |     1     |    U+0069 |	**Didn't Match**
+|     s     |     1     |    U+0073 |	**Didn't Match**
+|     h     |     1     |    U+0068 |	**Didn't Match**
+|   none    |     1     |    U+000a |	**Didn't Match**
+|   none    |     2     |    U+0639 |	**Didn't Match**
+|   none    |     2     |    U+0644 |	**Didn't Match**
+|   none    |     2     |    U+0648 |	**Didn't Match**
+|   none    |     2     |    U+0645 |	**Didn't Match**
+|           |     1     |    U+0020 |	**Didn't Match**
+|   none    |     2     |    U+0627 |	**Didn't Match**
+|   none    |     2     |    U+0644 |	**Didn't Match**
+|   none    |     2     |    U+0643 |	**Didn't Match**
+|   none    |     2     |    U+0645 |	**Didn't Match**
+|   none    |     2     |    U+0628 |	**Didn't Match**
+|   none    |     2     |    U+064a |	**Didn't Match**
+|   none    |     2     |    U+0648 |	**Didn't Match**
+|   none    |     2     |    U+062a |	**Didn't Match**
+|   none    |     2     |    U+0631 |	**Didn't Match**
+|   none    |     1     |    U+0009 |	**Didn't Match**
+|   none    |     1     |    U+0009 |	**Didn't Match**
+|   none    |     1     |    U+0009 |	**Didn't Match**
+|   none    |     1     |    U+0009 |	**Didn't Match**
+|   none    |     4     |   U+1f601 |	**Didn't Match**
+|   none    |     1     |    U+0009 |	**Didn't Match**
+|     A     |     1     |    U+0041 |	**Didn't Match**
+|     r     |     1     |    U+0072 |	**Didn't Match**
+|     a     |     1     |    U+0061 |	**Didn't Match**
+|     b     |     1     |    U+0062 |	**Didn't Match**
+|     i     |     1     |    U+0069 |	**Didn't Match**
+|     c     |     1     |    U+0063 |	**Didn't Match**
+|   none    |     1     |    U+000a |	**Didn't Match**
+|   none    |     3     |    U+8ba1 |	**Didn't Match**
+|   none    |     3     |    U+7b97 |	**Didn't Match**
+|   none    |     3     |    U+673a |	**Didn't Match**
+|   none    |     3     |    U+79d1 |	**Didn't Match**
+|   none    |     3     |    U+5b66 |	**Didn't Match**
+|   none    |     1     |    U+0009 |	**Didn't Match**
+|   none    |     1     |    U+0009 |	**Didn't Match**
+|   none    |     1     |    U+0009 |	**Didn't Match**
+|   none    |     1     |    U+0009 |	**Didn't Match**
+|   none    |     1     |    U+0009 |	**Didn't Match**
+|   none    |     4     |   U+1f602 |	**Didn't Match**
+|   none    |     1     |    U+0009 |	**Didn't Match**
+|     C     |     1     |    U+0043 |	**Didn't Match**
+|     h     |     1     |    U+0068 |	**Didn't Match**
+|     i     |     1     |    U+0069 |	**Didn't Match**
+|     n     |     1     |    U+006e |	**Didn't Match**
+|     e     |     1     |    U+0065 |	**Didn't Match**
+|     s     |     1     |    U+0073 |	**Didn't Match**
+|     e     |     1     |    U+0065 |	**Didn't Match**
+|   none    |     1     |    U+000a |	**Didn't Match**
+|     C     |     1     |    U+0043 |	**Didn't Match**
+|     i     |     1     |    U+0069 |	**Didn't Match**
+|   none    |     2     |    U+00ea |	**Didn't Match**
+|     n     |     1     |    U+006e |	**Didn't Match**
+|     c     |     1     |    U+0063 |	**Didn't Match**
+|     i     |     1     |    U+0069 |	**Didn't Match**
+|     a     |     1     |    U+0061 |	**Didn't Match**
+|           |     1     |    U+0020 |	**Didn't Match**
+|     d     |     1     |    U+0064 |	**Didn't Match**
+|     a     |     1     |    U+0061 |	**Didn't Match**
+|           |     1     |    U+0020 |	**Didn't Match**
+|     C     |     1     |    U+0043 |	**Didn't Match**
+|     o     |     1     |    U+006f |	**Didn't Match**
+|     m     |     1     |    U+006d |	**Didn't Match**
+|     p     |     1     |    U+0070 |	**Didn't Match**
+|     u     |     1     |    U+0075 |	**Didn't Match**
+|     t     |     1     |    U+0074 |	**Didn't Match**
+|     a     |     1     |    U+0061 |	**Didn't Match**
+|   none    |     2     |    U+00e7 |	**Didn't Match**
+|   none    |     2     |    U+00e3 |	**Didn't Match**
+|     o     |     1     |    U+006f |	**Didn't Match**
+|   none    |     1     |    U+0009 |	**Didn't Match**
+|   none    |     1     |    U+0009 |	**Didn't Match**
+|   none    |     4     |   U+1f633 |	**Didn't Match**
+|   none    |     1     |    U+0009 |	**Didn't Match**
+|     P     |     1     |    U+0050 |	**Didn't Match**
+|     o     |     1     |    U+006f |	**Didn't Match**
+|     r     |     1     |    U+0072 |	**Didn't Match**
+|     t     |     1     |    U+0074 |	**Didn't Match**
+|     u     |     1     |    U+0075 |	**Didn't Match**
+|     g     |     1     |    U+0067 |	**Didn't Match**
+|     u     |     1     |    U+0075 |	**Didn't Match**
+|     e     |     1     |    U+0065 |	**Didn't Match**
+|     s     |     1     |    U+0073 |	**Didn't Match**
+|     e     |     1     |    U+0065 |	**Didn't Match**
+|   none    |     1     |    U+000a |	**Didn't Match**
+|   none    |     2     |    U+05de |	**Didn't Match**
+|   none    |     2     |    U+05d3 |	**Didn't Match**
+|   none    |     2     |    U+05e2 |	**Didn't Match**
+|   none    |     2     |    U+05d9 |	**Didn't Match**
+|           |     1     |    U+0020 |	**Didn't Match**
+|   none    |     2     |    U+05d4 |	**Didn't Match**
+|   none    |     2     |    U+05de |	**Didn't Match**
+|   none    |     2     |    U+05d7 |	**Didn't Match**
+|   none    |     2     |    U+05e9 |	**Didn't Match**
+|   none    |     2     |    U+05d1 |	**Didn't Match**
+|   none    |     1     |    U+0009 |	**Didn't Match**
+|   none    |     1     |    U+0009 |	**Didn't Match**
+|   none    |     1     |    U+0009 |	**Didn't Match**
+|   none    |     1     |    U+0009 |	**Didn't Match**
+|   none    |     1     |    U+0009 |	**Didn't Match**
+|   none    |     4     |   U+1f60e |	**Didn't Match**
+|   none    |     1     |    U+0009 |	**Didn't Match**
+|     H     |     1     |    U+0048 |	**Didn't Match**
+|     e     |     1     |    U+0065 |	**Didn't Match**
+|     b     |     1     |    U+0062 |	**Didn't Match**
+|     r     |     1     |    U+0072 |	**Didn't Match**
+|     e     |     1     |    U+0065 |	**Didn't Match**
+|     w     |     1     |    U+0077 |	**Didn't Match**
+|   none    |     1     |    U+000a |	**Didn't Match**
+|   none    |     2     |    U+0418 |	**Didn't Match**
+|   none    |     2     |    U+043d |	**Didn't Match**
+|   none    |     2     |    U+0444 |	**Didn't Match**
+|   none    |     2     |    U+043e |	**Didn't Match**
+|   none    |     2     |    U+0440 |	**Didn't Match**
+|   none    |     2     |    U+043c |	**Didn't Match**
+|   none    |     2     |    U+0430 |	**Didn't Match**
+|   none    |     2     |    U+0442 |	**Didn't Match**
+|   none    |     2     |    U+0438 |	**Didn't Match**
+|   none    |     2     |    U+043a |	**Didn't Match**
+|   none    |     2     |    U+0430 |	**Didn't Match**
+|   none    |     1     |    U+0009 |	**Didn't Match**
+|   none    |     1     |    U+0009 |	**Didn't Match**
+|   none    |     1     |    U+0009 |	**Didn't Match**
+|   none    |     1     |    U+0009 |	**Didn't Match**
+|   none    |     1     |    U+0009 |	**Didn't Match**
+|   none    |     4     |   U+1f622 |	**Didn't Match**
+|   none    |     1     |    U+0009 |	**Didn't Match**
+|     R     |     1     |    U+0052 |	**Didn't Match**
+|     u     |     1     |    U+0075 |	**Didn't Match**
+|     s     |     1     |    U+0073 |	**Didn't Match**
+|     s     |     1     |    U+0073 |	**Didn't Match**
+|     i     |     1     |    U+0069 |	**Didn't Match**
+|     a     |     1     |    U+0061 |	**Didn't Match**
+|     n     |     1     |    U+006e |	**Didn't Match**
+|   none    |     1     |    U+000a |	**Didn't Match**
+|   none    |     3     |    U+cef4 |	**Didn't Match**
+|   none    |     3     |    U+d4e8 |	**Didn't Match**
+|   none    |     3     |    U+d130 |	**Didn't Match**
+|           |     1     |    U+0020 |	**Didn't Match**
+|   none    |     3     |    U+acfc |	**Didn't Match**
+|   none    |     3     |    U+d559 |	**Didn't Match**
+|   none    |     1     |    U+0009 |	**Didn't Match**
+|   none    |     1     |    U+0009 |	**Didn't Match**
+|   none    |     1     |    U+0009 |	**Didn't Match**
+|   none    |     1     |    U+0009 |	**Didn't Match**
+|   none    |     1     |    U+0009 |	**Didn't Match**
+|   none    |     4     |   U+1f61d |	**Didn't Match**
+|   none    |     1     |    U+0009 |	**Didn't Match**
+|     K     |     1     |    U+004b |	**Didn't Match**
+|     o     |     1     |    U+006f |	**Didn't Match**
+|     r     |     1     |    U+0072 |	**Didn't Match**
+|     e     |     1     |    U+0065 |	**Didn't Match**
+|     a     |     1     |    U+0061 |	**Didn't Match**
+|     n     |     1     |    U+006e |	**Didn't Match**
+|   none    |     1     |    U+000a |	**Didn't Match**
+|   none    |     3     |    U+30b3 |	**Didn't Match**
+|   none    |     3     |    U+30f3 |	**Didn't Match**
+|   none    |     3     |    U+30d4 |	**Didn't Match**
+|   none    |     3     |    U+30e5 |	**Didn't Match**
+|   none    |     3     |    U+30fc |	**Didn't Match**
+|   none    |     3     |    U+30bf |	**Didn't Match**
+|   none    |     3     |    U+30b5 |	**Didn't Match**
+|   none    |     3     |    U+30a4 |	**Didn't Match**
+|   none    |     3     |    U+30a8 |	**Didn't Match**
+|   none    |     3     |    U+30f3 |	**Didn't Match**
+|   none    |     3     |    U+30b9 |	**Didn't Match**
+|   none    |     1     |    U+0009 |	**Didn't Match**
+|   none    |     1     |    U+0009 |	**Didn't Match**
+|   none    |     4     |   U+1f611 |	**Didn't Match**
+|   none    |     1     |    U+0009 |	**Didn't Match**
+|     J     |     1     |    U+004a |	**Didn't Match**
+|     a     |     1     |    U+0061 |	**Didn't Match**
+|     p     |     1     |    U+0070 |	**Didn't Match**
+|     a     |     1     |    U+0061 |	**Didn't Match**
+|     n     |     1     |    U+006e |	**Didn't Match**
+|     e     |     1     |    U+0065 |	**Didn't Match**
+|     s     |     1     |    U+0073 |	**Didn't Match**
+|     e     |     1     |    U+0065 |	**Didn't Match**
+|   none    |     1     |    U+000a |	**Didn't Match**
+Output written successfully.
+
+
+Your Output:
+	**Didn't Match**
+./a.out -vv -e UTF-16LE utf-8.txt 8to16LEv2.txt                                 -- BAD
+Failed: Verbose UTF-8 to UTF-16LE verbosity did not match
+Correct Output:
+|     A     |     1     |    U+0041 |      0x41 |	**Didn't Match**
+|     B     |     1     |    U+0042 |      0x42 |	**Didn't Match**
+|     C     |     1     |    U+0043 |      0x43 |	**Didn't Match**
+|     D     |     1     |    U+0044 |      0x44 |	**Didn't Match**
+|     E     |     1     |    U+0045 |      0x45 |	**Didn't Match**
+|     F     |     1     |    U+0046 |      0x46 |	**Didn't Match**
+|     G     |     1     |    U+0047 |      0x47 |	**Didn't Match**
+|     H     |     1     |    U+0048 |      0x48 |	**Didn't Match**
+|     I     |     1     |    U+0049 |      0x49 |	**Didn't Match**
+|     J     |     1     |    U+004a |      0x4a |	**Didn't Match**
+|     K     |     1     |    U+004b |      0x4b |	**Didn't Match**
+|     L     |     1     |    U+004c |      0x4c |	**Didn't Match**
+|     M     |     1     |    U+004d |      0x4d |	**Didn't Match**
+|     N     |     1     |    U+004e |      0x4e |	**Didn't Match**
+|     O     |     1     |    U+004f |      0x4f |	**Didn't Match**
+|     P     |     1     |    U+0050 |      0x50 |	**Didn't Match**
+|     Q     |     1     |    U+0051 |      0x51 |	**Didn't Match**
+|     R     |     1     |    U+0052 |      0x52 |	**Didn't Match**
+|     S     |     1     |    U+0053 |      0x53 |	**Didn't Match**
+|     T     |     1     |    U+0054 |      0x54 |	**Didn't Match**
+|     U     |     1     |    U+0055 |      0x55 |	**Didn't Match**
+|     V     |     1     |    U+0056 |      0x56 |	**Didn't Match**
+|     W     |     1     |    U+0057 |      0x57 |	**Didn't Match**
+|     X     |     1     |    U+0058 |      0x58 |	**Didn't Match**
+|     Y     |     1     |    U+0059 |      0x59 |	**Didn't Match**
+|     Z     |     1     |    U+005a |      0x5a |	**Didn't Match**
+|   none    |     1     |    U+000a |      0x0a |	**Didn't Match**
+|     1     |     1     |    U+0031 |      0x31 |	**Didn't Match**
+|     2     |     1     |    U+0032 |      0x32 |	**Didn't Match**
+|     3     |     1     |    U+0033 |      0x33 |	**Didn't Match**
+|     4     |     1     |    U+0034 |      0x34 |	**Didn't Match**
+|     5     |     1     |    U+0035 |      0x35 |	**Didn't Match**
+|     6     |     1     |    U+0036 |      0x36 |	**Didn't Match**
+|     7     |     1     |    U+0037 |      0x37 |	**Didn't Match**
+|     8     |     1     |    U+0038 |      0x38 |	**Didn't Match**
+|     9     |     1     |    U+0039 |      0x39 |	**Didn't Match**
+|     0     |     1     |    U+0030 |      0x30 |	**Didn't Match**
+|   none    |     1     |    U+000a |      0x0a |	**Didn't Match**
+|     a     |     1     |    U+0061 |      0x61 |	**Didn't Match**
+|     b     |     1     |    U+0062 |      0x62 |	**Didn't Match**
+|     c     |     1     |    U+0063 |      0x63 |	**Didn't Match**
+|     d     |     1     |    U+0064 |      0x64 |	**Didn't Match**
+|     e     |     1     |    U+0065 |      0x65 |	**Didn't Match**
+|     f     |     1     |    U+0066 |      0x66 |	**Didn't Match**
+|     g     |     1     |    U+0067 |      0x67 |	**Didn't Match**
+|     h     |     1     |    U+0068 |      0x68 |	**Didn't Match**
+|     i     |     1     |    U+0069 |      0x69 |	**Didn't Match**
+|     j     |     1     |    U+006a |      0x6a |	**Didn't Match**
+|     k     |     1     |    U+006b |      0x6b |	**Didn't Match**
+|     l     |     1     |    U+006c |      0x6c |	**Didn't Match**
+|     m     |     1     |    U+006d |      0x6d |	**Didn't Match**
+|     n     |     1     |    U+006e |      0x6e |	**Didn't Match**
+|     o     |     1     |    U+006f |      0x6f |	**Didn't Match**
+|     p     |     1     |    U+0070 |      0x70 |	**Didn't Match**
+|     q     |     1     |    U+0071 |      0x71 |	**Didn't Match**
+|     r     |     1     |    U+0072 |      0x72 |	**Didn't Match**
+|     s     |     1     |    U+0073 |      0x73 |	**Didn't Match**
+|     t     |     1     |    U+0074 |      0x74 |	**Didn't Match**
+|     u     |     1     |    U+0075 |      0x75 |	**Didn't Match**
+|     v     |     1     |    U+0076 |      0x76 |	**Didn't Match**
+|     w     |     1     |    U+0077 |      0x77 |	**Didn't Match**
+|     x     |     1     |    U+0078 |      0x78 |	**Didn't Match**
+|     y     |     1     |    U+0079 |      0x79 |	**Didn't Match**
+|     z     |     1     |    U+007a |      0x7a |	**Didn't Match**
+|   none    |     1     |    U+000a |      0x0a |	**Didn't Match**
+|   none    |     1     |    U+0009 |      0x09 |	**Didn't Match**
+|           |     1     |    U+0020 |      0x20 |	**Didn't Match**
+|     !     |     1     |    U+0021 |      0x21 |	**Didn't Match**
+|     !     |     1     |    U+0021 |      0x21 |	**Didn't Match**
+|     @     |     1     |    U+0040 |      0x40 |	**Didn't Match**
+|     #     |     1     |    U+0023 |      0x23 |	**Didn't Match**
+|     $     |     1     |    U+0024 |      0x24 |	**Didn't Match**
+|     %     |     1     |    U+0025 |      0x25 |	**Didn't Match**
+|     ^     |     1     |    U+005e |      0x5e |	**Didn't Match**
+|     &     |     1     |    U+0026 |      0x26 |	**Didn't Match**
+|     *     |     1     |    U+002a |      0x2a |	**Didn't Match**
+|     (     |     1     |    U+0028 |      0x28 |	**Didn't Match**
+|     )     |     1     |    U+0029 |      0x29 |	**Didn't Match**
+|     -     |     1     |    U+002d |      0x2d |	**Didn't Match**
+|     _     |     1     |    U+005f |      0x5f |	**Didn't Match**
+|     +     |     1     |    U+002b |      0x2b |	**Didn't Match**
+|     =     |     1     |    U+003d |      0x3d |	**Didn't Match**
+|     ?     |     1     |    U+003f |      0x3f |	**Didn't Match**
+|     /     |     1     |    U+002f |      0x2f |	**Didn't Match**
+|     [     |     1     |    U+005b |      0x5b |	**Didn't Match**
+|     ]     |     1     |    U+005d |      0x5d |	**Didn't Match**
+|     {     |     1     |    U+007b |      0x7b |	**Didn't Match**
+|     }     |     1     |    U+007d |      0x7d |	**Didn't Match**
+|     \     |     1     |    U+005c |      0x5c |	**Didn't Match**
+|     ~     |     1     |    U+007e |      0x7e |	**Didn't Match**
+|     `     |     1     |    U+0060 |      0x60 |	**Didn't Match**
+|     ,     |     1     |    U+002c |      0x2c |	**Didn't Match**
+|     .     |     1     |    U+002e |      0x2e |	**Didn't Match**
+|     ;     |     1     |    U+003b |      0x3b |	**Didn't Match**
+|     :     |     1     |    U+003a |      0x3a |	**Didn't Match**
+|     '     |     1     |    U+0027 |      0x27 |	**Didn't Match**
+|     "     |     1     |    U+0022 |      0x22 |	**Didn't Match**
+|   none    |     1     |    U+000a |      0x0a |	**Didn't Match**
+Output written successfully.
+
+
+Your Output:
+	**Didn't Match**
+./a.out -vv -e UTF-16LE utf-8-special.txt 8to16LEsv2.txt                        -- BAD
+Failed: Verbose UTF-8-special to UTF-16LE verbosity did not match
+Correct Output:
+|     A     |     1     |    U+0041 |      0x41 |	**Didn't Match**
+|   none    |     2     |    U+00c5 |    0xc385 |	**Didn't Match**
+|   none    |     2     |    U+00c1 |    0xc381 |	**Didn't Match**
+|   none    |     2     |    U+00c2 |    0xc382 |	**Didn't Match**
+|   none    |     2     |    U+00c0 |    0xc380 |	**Didn't Match**
+|   none    |     2     |    U+00c3 |    0xc383 |	**Didn't Match**
+|   none    |     2     |    U+00c4 |    0xc384 |	**Didn't Match**
+|   none    |     1     |    U+000a |      0x0a |	**Didn't Match**
+|     C     |     1     |    U+0043 |      0x43 |	**Didn't Match**
+|     i     |     1     |    U+0069 |      0x69 |	**Didn't Match**
+|     e     |     1     |    U+0065 |      0x65 |	**Didn't Match**
+|     n     |     1     |    U+006e |      0x6e |	**Didn't Match**
+|     c     |     1     |    U+0063 |      0x63 |	**Didn't Match**
+|     i     |     1     |    U+0069 |      0x69 |	**Didn't Match**
+|     a     |     1     |    U+0061 |      0x61 |	**Didn't Match**
+|     s     |     1     |    U+0073 |      0x73 |	**Didn't Match**
+|           |     1     |    U+0020 |      0x20 |	**Didn't Match**
+|     d     |     1     |    U+0064 |      0x64 |	**Didn't Match**
+|     e     |     1     |    U+0065 |      0x65 |	**Didn't Match**
+|           |     1     |    U+0020 |      0x20 |	**Didn't Match**
+|     l     |     1     |    U+006c |      0x6c |	**Didn't Match**
+|     a     |     1     |    U+0061 |      0x61 |	**Didn't Match**
+|           |     1     |    U+0020 |      0x20 |	**Didn't Match**
+|     C     |     1     |    U+0043 |      0x43 |	**Didn't Match**
+|     o     |     1     |    U+006f |      0x6f |	**Didn't Match**
+|     m     |     1     |    U+006d |      0x6d |	**Didn't Match**
+|     p     |     1     |    U+0070 |      0x70 |	**Didn't Match**
+|     u     |     1     |    U+0075 |      0x75 |	**Didn't Match**
+|     t     |     1     |    U+0074 |      0x74 |	**Didn't Match**
+|     a     |     1     |    U+0061 |      0x61 |	**Didn't Match**
+|     c     |     1     |    U+0063 |      0x63 |	**Didn't Match**
+|     i     |     1     |    U+0069 |      0x69 |	**Didn't Match**
+|   none    |     2     |    U+00f3 |    0xc3b3 |	**Didn't Match**
+|     n     |     1     |    U+006e |      0x6e |	**Didn't Match**
+|   none    |     1     |    U+0009 |      0x09 |	**Didn't Match**
+|   none    |     4     |   U+1f600 |0xf09f9880 |	**Didn't Match**
+|   none    |     1     |    U+0009 |      0x09 |	**Didn't Match**
+|     S     |     1     |    U+0053 |      0x53 |	**Didn't Match**
+|     p     |     1     |    U+0070 |      0x70 |	**Didn't Match**
+|     a     |     1     |    U+0061 |      0x61 |	**Didn't Match**
+|     n     |     1     |    U+006e |      0x6e |	**Didn't Match**
+|     i     |     1     |    U+0069 |      0x69 |	**Didn't Match**
+|     s     |     1     |    U+0073 |      0x73 |	**Didn't Match**
+|     h     |     1     |    U+0068 |      0x68 |	**Didn't Match**
+|   none    |     1     |    U+000a |      0x0a |	**Didn't Match**
+|   none    |     2     |    U+0639 |    0xd8b9 |	**Didn't Match**
+|   none    |     2     |    U+0644 |    0xd984 |	**Didn't Match**
+|   none    |     2     |    U+0648 |    0xd988 |	**Didn't Match**
+|   none    |     2     |    U+0645 |    0xd985 |	**Didn't Match**
+|           |     1     |    U+0020 |      0x20 |	**Didn't Match**
+|   none    |     2     |    U+0627 |    0xd8a7 |	**Didn't Match**
+|   none    |     2     |    U+0644 |    0xd984 |	**Didn't Match**
+|   none    |     2     |    U+0643 |    0xd983 |	**Didn't Match**
+|   none    |     2     |    U+0645 |    0xd985 |	**Didn't Match**
+|   none    |     2     |    U+0628 |    0xd8a8 |	**Didn't Match**
+|   none    |     2     |    U+064a |    0xd98a |	**Didn't Match**
+|   none    |     2     |    U+0648 |    0xd988 |	**Didn't Match**
+|   none    |     2     |    U+062a |    0xd8aa |	**Didn't Match**
+|   none    |     2     |    U+0631 |    0xd8b1 |	**Didn't Match**
+|   none    |     1     |    U+0009 |      0x09 |	**Didn't Match**
+|   none    |     1     |    U+0009 |      0x09 |	**Didn't Match**
+|   none    |     1     |    U+0009 |      0x09 |	**Didn't Match**
+|   none    |     1     |    U+0009 |      0x09 |	**Didn't Match**
+|   none    |     4     |   U+1f601 |0xf09f9881 |	**Didn't Match**
+|   none    |     1     |    U+0009 |      0x09 |	**Didn't Match**
+|     A     |     1     |    U+0041 |      0x41 |	**Didn't Match**
+|     r     |     1     |    U+0072 |      0x72 |	**Didn't Match**
+|     a     |     1     |    U+0061 |      0x61 |	**Didn't Match**
+|     b     |     1     |    U+0062 |      0x62 |	**Didn't Match**
+|     i     |     1     |    U+0069 |      0x69 |	**Didn't Match**
+|     c     |     1     |    U+0063 |      0x63 |	**Didn't Match**
+|   none    |     1     |    U+000a |      0x0a |	**Didn't Match**
+|   none    |     3     |    U+8ba1 |  0xe8aea1 |	**Didn't Match**
+|   none    |     3     |    U+7b97 |  0xe7ae97 |	**Didn't Match**
+|   none    |     3     |    U+673a |  0xe69cba |	**Didn't Match**
+|   none    |     3     |    U+79d1 |  0xe7a791 |	**Didn't Match**
+|   none    |     3     |    U+5b66 |  0xe5ada6 |	**Didn't Match**
+|   none    |     1     |    U+0009 |      0x09 |	**Didn't Match**
+|   none    |     1     |    U+0009 |      0x09 |	**Didn't Match**
+|   none    |     1     |    U+0009 |      0x09 |	**Didn't Match**
+|   none    |     1     |    U+0009 |      0x09 |	**Didn't Match**
+|   none    |     1     |    U+0009 |      0x09 |	**Didn't Match**
+|   none    |     4     |   U+1f602 |0xf09f9882 |	**Didn't Match**
+|   none    |     1     |    U+0009 |      0x09 |	**Didn't Match**
+|     C     |     1     |    U+0043 |      0x43 |	**Didn't Match**
+|     h     |     1     |    U+0068 |      0x68 |	**Didn't Match**
+|     i     |     1     |    U+0069 |      0x69 |	**Didn't Match**
+|     n     |     1     |    U+006e |      0x6e |	**Didn't Match**
+|     e     |     1     |    U+0065 |      0x65 |	**Didn't Match**
+|     s     |     1     |    U+0073 |      0x73 |	**Didn't Match**
+|     e     |     1     |    U+0065 |      0x65 |	**Didn't Match**
+|   none    |     1     |    U+000a |      0x0a |	**Didn't Match**
+|     C     |     1     |    U+0043 |      0x43 |	**Didn't Match**
+|     i     |     1     |    U+0069 |      0x69 |	**Didn't Match**
+|   none    |     2     |    U+00ea |    0xc3aa |	**Didn't Match**
+|     n     |     1     |    U+006e |      0x6e |	**Didn't Match**
+|     c     |     1     |    U+0063 |      0x63 |	**Didn't Match**
+|     i     |     1     |    U+0069 |      0x69 |	**Didn't Match**
+|     a     |     1     |    U+0061 |      0x61 |	**Didn't Match**
+|           |     1     |    U+0020 |      0x20 |	**Didn't Match**
+|     d     |     1     |    U+0064 |      0x64 |	**Didn't Match**
+|     a     |     1     |    U+0061 |      0x61 |	**Didn't Match**
+|           |     1     |    U+0020 |      0x20 |	**Didn't Match**
+|     C     |     1     |    U+0043 |      0x43 |	**Didn't Match**
+|     o     |     1     |    U+006f |      0x6f |	**Didn't Match**
+|     m     |     1     |    U+006d |      0x6d |	**Didn't Match**
+|     p     |     1     |    U+0070 |      0x70 |	**Didn't Match**
+|     u     |     1     |    U+0075 |      0x75 |	**Didn't Match**
+|     t     |     1     |    U+0074 |      0x74 |	**Didn't Match**
+|     a     |     1     |    U+0061 |      0x61 |	**Didn't Match**
+|   none    |     2     |    U+00e7 |    0xc3a7 |	**Didn't Match**
+|   none    |     2     |    U+00e3 |    0xc3a3 |	**Didn't Match**
+|     o     |     1     |    U+006f |      0x6f |	**Didn't Match**
+|   none    |     1     |    U+0009 |      0x09 |	**Didn't Match**
+|   none    |     1     |    U+0009 |      0x09 |	**Didn't Match**
+|   none    |     4     |   U+1f633 |0xf09f98b3 |	**Didn't Match**
+|   none    |     1     |    U+0009 |      0x09 |	**Didn't Match**
+|     P     |     1     |    U+0050 |      0x50 |	**Didn't Match**
+|     o     |     1     |    U+006f |      0x6f |	**Didn't Match**
+|     r     |     1     |    U+0072 |      0x72 |	**Didn't Match**
+|     t     |     1     |    U+0074 |      0x74 |	**Didn't Match**
+|     u     |     1     |    U+0075 |      0x75 |	**Didn't Match**
+|     g     |     1     |    U+0067 |      0x67 |	**Didn't Match**
+|     u     |     1     |    U+0075 |      0x75 |	**Didn't Match**
+|     e     |     1     |    U+0065 |      0x65 |	**Didn't Match**
+|     s     |     1     |    U+0073 |      0x73 |	**Didn't Match**
+|     e     |     1     |    U+0065 |      0x65 |	**Didn't Match**
+|   none    |     1     |    U+000a |      0x0a |	**Didn't Match**
+|   none    |     2     |    U+05de |    0xd79e |	**Didn't Match**
+|   none    |     2     |    U+05d3 |    0xd793 |	**Didn't Match**
+|   none    |     2     |    U+05e2 |    0xd7a2 |	**Didn't Match**
+|   none    |     2     |    U+05d9 |    0xd799 |	**Didn't Match**
+|           |     1     |    U+0020 |      0x20 |	**Didn't Match**
+|   none    |     2     |    U+05d4 |    0xd794 |	**Didn't Match**
+|   none    |     2     |    U+05de |    0xd79e |	**Didn't Match**
+|   none    |     2     |    U+05d7 |    0xd797 |	**Didn't Match**
+|   none    |     2     |    U+05e9 |    0xd7a9 |	**Didn't Match**
+|   none    |     2     |    U+05d1 |    0xd791 |	**Didn't Match**
+|   none    |     1     |    U+0009 |      0x09 |	**Didn't Match**
+|   none    |     1     |    U+0009 |      0x09 |	**Didn't Match**
+|   none    |     1     |    U+0009 |      0x09 |	**Didn't Match**
+|   none    |     1     |    U+0009 |      0x09 |	**Didn't Match**
+|   none    |     1     |    U+0009 |      0x09 |	**Didn't Match**
+|   none    |     4     |   U+1f60e |0xf09f988e |	**Didn't Match**
+|   none    |     1     |    U+0009 |      0x09 |	**Didn't Match**
+|     H     |     1     |    U+0048 |      0x48 |	**Didn't Match**
+|     e     |     1     |    U+0065 |      0x65 |	**Didn't Match**
+|     b     |     1     |    U+0062 |      0x62 |	**Didn't Match**
+|     r     |     1     |    U+0072 |      0x72 |	**Didn't Match**
+|     e     |     1     |    U+0065 |      0x65 |	**Didn't Match**
+|     w     |     1     |    U+0077 |      0x77 |	**Didn't Match**
+|   none    |     1     |    U+000a |      0x0a |	**Didn't Match**
+|   none    |     2     |    U+0418 |    0xd098 |	**Didn't Match**
+|   none    |     2     |    U+043d |    0xd0bd |	**Didn't Match**
+|   none    |     2     |    U+0444 |    0xd184 |	**Didn't Match**
+|   none    |     2     |    U+043e |    0xd0be |	**Didn't Match**
+|   none    |     2     |    U+0440 |    0xd180 |	**Didn't Match**
+|   none    |     2     |    U+043c |    0xd0bc |	**Didn't Match**
+|   none    |     2     |    U+0430 |    0xd0b0 |	**Didn't Match**
+|   none    |     2     |    U+0442 |    0xd182 |	**Didn't Match**
+|   none    |     2     |    U+0438 |    0xd0b8 |	**Didn't Match**
+|   none    |     2     |    U+043a |    0xd0ba |	**Didn't Match**
+|   none    |     2     |    U+0430 |    0xd0b0 |	**Didn't Match**
+|   none    |     1     |    U+0009 |      0x09 |	**Didn't Match**
+|   none    |     1     |    U+0009 |      0x09 |	**Didn't Match**
+|   none    |     1     |    U+0009 |      0x09 |	**Didn't Match**
+|   none    |     1     |    U+0009 |      0x09 |	**Didn't Match**
+|   none    |     1     |    U+0009 |      0x09 |	**Didn't Match**
+|   none    |     4     |   U+1f622 |0xf09f98a2 |	**Didn't Match**
+|   none    |     1     |    U+0009 |      0x09 |	**Didn't Match**
+|     R     |     1     |    U+0052 |      0x52 |	**Didn't Match**
+|     u     |     1     |    U+0075 |      0x75 |	**Didn't Match**
+|     s     |     1     |    U+0073 |      0x73 |	**Didn't Match**
+|     s     |     1     |    U+0073 |      0x73 |	**Didn't Match**
+|     i     |     1     |    U+0069 |      0x69 |	**Didn't Match**
+|     a     |     1     |    U+0061 |      0x61 |	**Didn't Match**
+|     n     |     1     |    U+006e |      0x6e |	**Didn't Match**
+|   none    |     1     |    U+000a |      0x0a |	**Didn't Match**
+|   none    |     3     |    U+cef4 |  0xecbbb4 |	**Didn't Match**
+|   none    |     3     |    U+d4e8 |  0xed93a8 |	**Didn't Match**
+|   none    |     3     |    U+d130 |  0xed84b0 |	**Didn't Match**
+|           |     1     |    U+0020 |      0x20 |	**Didn't Match**
+|   none    |     3     |    U+acfc |  0xeab3bc |	**Didn't Match**
+|   none    |     3     |    U+d559 |  0xed9599 |	**Didn't Match**
+|   none    |     1     |    U+0009 |      0x09 |	**Didn't Match**
+|   none    |     1     |    U+0009 |      0x09 |	**Didn't Match**
+|   none    |     1     |    U+0009 |      0x09 |	**Didn't Match**
+|   none    |     1     |    U+0009 |      0x09 |	**Didn't Match**
+|   none    |     1     |    U+0009 |      0x09 |	**Didn't Match**
+|   none    |     4     |   U+1f61d |0xf09f989d |	**Didn't Match**
+|   none    |     1     |    U+0009 |      0x09 |	**Didn't Match**
+|     K     |     1     |    U+004b |      0x4b |	**Didn't Match**
+|     o     |     1     |    U+006f |      0x6f |	**Didn't Match**
+|     r     |     1     |    U+0072 |      0x72 |	**Didn't Match**
+|     e     |     1     |    U+0065 |      0x65 |	**Didn't Match**
+|     a     |     1     |    U+0061 |      0x61 |	**Didn't Match**
+|     n     |     1     |    U+006e |      0x6e |	**Didn't Match**
+|   none    |     1     |    U+000a |      0x0a |	**Didn't Match**
+|   none    |     3     |    U+30b3 |  0xe382b3 |	**Didn't Match**
+|   none    |     3     |    U+30f3 |  0xe383b3 |	**Didn't Match**
+|   none    |     3     |    U+30d4 |  0xe38394 |	**Didn't Match**
+|   none    |     3     |    U+30e5 |  0xe383a5 |	**Didn't Match**
+|   none    |     3     |    U+30fc |  0xe383bc |	**Didn't Match**
+|   none    |     3     |    U+30bf |  0xe382bf |	**Didn't Match**
+|   none    |     3     |    U+30b5 |  0xe382b5 |	**Didn't Match**
+|   none    |     3     |    U+30a4 |  0xe382a4 |	**Didn't Match**
+|   none    |     3     |    U+30a8 |  0xe382a8 |	**Didn't Match**
+|   none    |     3     |    U+30f3 |  0xe383b3 |	**Didn't Match**
+|   none    |     3     |    U+30b9 |  0xe382b9 |	**Didn't Match**
+|   none    |     1     |    U+0009 |      0x09 |	**Didn't Match**
+|   none    |     1     |    U+0009 |      0x09 |	**Didn't Match**
+|   none    |     4     |   U+1f611 |0xf09f9891 |	**Didn't Match**
+|   none    |     1     |    U+0009 |      0x09 |	**Didn't Match**
+|     J     |     1     |    U+004a |      0x4a |	**Didn't Match**
+|     a     |     1     |    U+0061 |      0x61 |	**Didn't Match**
+|     p     |     1     |    U+0070 |      0x70 |	**Didn't Match**
+|     a     |     1     |    U+0061 |      0x61 |	**Didn't Match**
+|     n     |     1     |    U+006e |      0x6e |	**Didn't Match**
+|     e     |     1     |    U+0065 |      0x65 |	**Didn't Match**
+|     s     |     1     |    U+0073 |      0x73 |	**Didn't Match**
+|     e     |     1     |    U+0065 |      0x65 |	**Didn't Match**
+|   none    |     1     |    U+000a |      0x0a |	**Didn't Match**
+Output written successfully.
+
+
+Your Output:
+	**Didn't Match**
+./a.out -vvv -e UTF-16LE utf-8.txt 8to16LEv3.txt                                -- BAD
+Failed: Verbose UTF-8 to UTF-16LE verbosity did not match
+Correct Output:
+|     A     |     1     |    U+0041 |      0x41 |    0x4100 |	**Didn't Match**
+|     B     |     1     |    U+0042 |      0x42 |    0x4200 |	**Didn't Match**
+|     C     |     1     |    U+0043 |      0x43 |    0x4300 |	**Didn't Match**
+|     D     |     1     |    U+0044 |      0x44 |    0x4400 |	**Didn't Match**
+|     E     |     1     |    U+0045 |      0x45 |    0x4500 |	**Didn't Match**
+|     F     |     1     |    U+0046 |      0x46 |    0x4600 |	**Didn't Match**
+|     G     |     1     |    U+0047 |      0x47 |    0x4700 |	**Didn't Match**
+|     H     |     1     |    U+0048 |      0x48 |    0x4800 |	**Didn't Match**
+|     I     |     1     |    U+0049 |      0x49 |    0x4900 |	**Didn't Match**
+|     J     |     1     |    U+004a |      0x4a |    0x4a00 |	**Didn't Match**
+|     K     |     1     |    U+004b |      0x4b |    0x4b00 |	**Didn't Match**
+|     L     |     1     |    U+004c |      0x4c |    0x4c00 |	**Didn't Match**
+|     M     |     1     |    U+004d |      0x4d |    0x4d00 |	**Didn't Match**
+|     N     |     1     |    U+004e |      0x4e |    0x4e00 |	**Didn't Match**
+|     O     |     1     |    U+004f |      0x4f |    0x4f00 |	**Didn't Match**
+|     P     |     1     |    U+0050 |      0x50 |    0x5000 |	**Didn't Match**
+|     Q     |     1     |    U+0051 |      0x51 |    0x5100 |	**Didn't Match**
+|     R     |     1     |    U+0052 |      0x52 |    0x5200 |	**Didn't Match**
+|     S     |     1     |    U+0053 |      0x53 |    0x5300 |	**Didn't Match**
+|     T     |     1     |    U+0054 |      0x54 |    0x5400 |	**Didn't Match**
+|     U     |     1     |    U+0055 |      0x55 |    0x5500 |	**Didn't Match**
+|     V     |     1     |    U+0056 |      0x56 |    0x5600 |	**Didn't Match**
+|     W     |     1     |    U+0057 |      0x57 |    0x5700 |	**Didn't Match**
+|     X     |     1     |    U+0058 |      0x58 |    0x5800 |	**Didn't Match**
+|     Y     |     1     |    U+0059 |      0x59 |    0x5900 |	**Didn't Match**
+|     Z     |     1     |    U+005a |      0x5a |    0x5a00 |	**Didn't Match**
+|   none    |     1     |    U+000a |      0x0a |    0x0a00 |	**Didn't Match**
+|     1     |     1     |    U+0031 |      0x31 |    0x3100 |	**Didn't Match**
+|     2     |     1     |    U+0032 |      0x32 |    0x3200 |	**Didn't Match**
+|     3     |     1     |    U+0033 |      0x33 |    0x3300 |	**Didn't Match**
+|     4     |     1     |    U+0034 |      0x34 |    0x3400 |	**Didn't Match**
+|     5     |     1     |    U+0035 |      0x35 |    0x3500 |	**Didn't Match**
+|     6     |     1     |    U+0036 |      0x36 |    0x3600 |	**Didn't Match**
+|     7     |     1     |    U+0037 |      0x37 |    0x3700 |	**Didn't Match**
+|     8     |     1     |    U+0038 |      0x38 |    0x3800 |	**Didn't Match**
+|     9     |     1     |    U+0039 |      0x39 |    0x3900 |	**Didn't Match**
+|     0     |     1     |    U+0030 |      0x30 |    0x3000 |	**Didn't Match**
+|   none    |     1     |    U+000a |      0x0a |    0x0a00 |	**Didn't Match**
+|     a     |     1     |    U+0061 |      0x61 |    0x6100 |	**Didn't Match**
+|     b     |     1     |    U+0062 |      0x62 |    0x6200 |	**Didn't Match**
+|     c     |     1     |    U+0063 |      0x63 |    0x6300 |	**Didn't Match**
+|     d     |     1     |    U+0064 |      0x64 |    0x6400 |	**Didn't Match**
+|     e     |     1     |    U+0065 |      0x65 |    0x6500 |	**Didn't Match**
+|     f     |     1     |    U+0066 |      0x66 |    0x6600 |	**Didn't Match**
+|     g     |     1     |    U+0067 |      0x67 |    0x6700 |	**Didn't Match**
+|     h     |     1     |    U+0068 |      0x68 |    0x6800 |	**Didn't Match**
+|     i     |     1     |    U+0069 |      0x69 |    0x6900 |	**Didn't Match**
+|     j     |     1     |    U+006a |      0x6a |    0x6a00 |	**Didn't Match**
+|     k     |     1     |    U+006b |      0x6b |    0x6b00 |	**Didn't Match**
+|     l     |     1     |    U+006c |      0x6c |    0x6c00 |	**Didn't Match**
+|     m     |     1     |    U+006d |      0x6d |    0x6d00 |	**Didn't Match**
+|     n     |     1     |    U+006e |      0x6e |    0x6e00 |	**Didn't Match**
+|     o     |     1     |    U+006f |      0x6f |    0x6f00 |	**Didn't Match**
+|     p     |     1     |    U+0070 |      0x70 |    0x7000 |	**Didn't Match**
+|     q     |     1     |    U+0071 |      0x71 |    0x7100 |	**Didn't Match**
+|     r     |     1     |    U+0072 |      0x72 |    0x7200 |	**Didn't Match**
+|     s     |     1     |    U+0073 |      0x73 |    0x7300 |	**Didn't Match**
+|     t     |     1     |    U+0074 |      0x74 |    0x7400 |	**Didn't Match**
+|     u     |     1     |    U+0075 |      0x75 |    0x7500 |	**Didn't Match**
+|     v     |     1     |    U+0076 |      0x76 |    0x7600 |	**Didn't Match**
+|     w     |     1     |    U+0077 |      0x77 |    0x7700 |	**Didn't Match**
+|     x     |     1     |    U+0078 |      0x78 |    0x7800 |	**Didn't Match**
+|     y     |     1     |    U+0079 |      0x79 |    0x7900 |	**Didn't Match**
+|     z     |     1     |    U+007a |      0x7a |    0x7a00 |	**Didn't Match**
+|   none    |     1     |    U+000a |      0x0a |    0x0a00 |	**Didn't Match**
+|   none    |     1     |    U+0009 |      0x09 |    0x0900 |	**Didn't Match**
+|           |     1     |    U+0020 |      0x20 |    0x2000 |	**Didn't Match**
+|     !     |     1     |    U+0021 |      0x21 |    0x2100 |	**Didn't Match**
+|     !     |     1     |    U+0021 |      0x21 |    0x2100 |	**Didn't Match**
+|     @     |     1     |    U+0040 |      0x40 |    0x4000 |	**Didn't Match**
+|     #     |     1     |    U+0023 |      0x23 |    0x2300 |	**Didn't Match**
+|     $     |     1     |    U+0024 |      0x24 |    0x2400 |	**Didn't Match**
+|     %     |     1     |    U+0025 |      0x25 |    0x2500 |	**Didn't Match**
+|     ^     |     1     |    U+005e |      0x5e |    0x5e00 |	**Didn't Match**
+|     &     |     1     |    U+0026 |      0x26 |    0x2600 |	**Didn't Match**
+|     *     |     1     |    U+002a |      0x2a |    0x2a00 |	**Didn't Match**
+|     (     |     1     |    U+0028 |      0x28 |    0x2800 |	**Didn't Match**
+|     )     |     1     |    U+0029 |      0x29 |    0x2900 |	**Didn't Match**
+|     -     |     1     |    U+002d |      0x2d |    0x2d00 |	**Didn't Match**
+|     _     |     1     |    U+005f |      0x5f |    0x5f00 |	**Didn't Match**
+|     +     |     1     |    U+002b |      0x2b |    0x2b00 |	**Didn't Match**
+|     =     |     1     |    U+003d |      0x3d |    0x3d00 |	**Didn't Match**
+|     ?     |     1     |    U+003f |      0x3f |    0x3f00 |	**Didn't Match**
+|     /     |     1     |    U+002f |      0x2f |    0x2f00 |	**Didn't Match**
+|     [     |     1     |    U+005b |      0x5b |    0x5b00 |	**Didn't Match**
+|     ]     |     1     |    U+005d |      0x5d |    0x5d00 |	**Didn't Match**
+|     {     |     1     |    U+007b |      0x7b |    0x7b00 |	**Didn't Match**
+|     }     |     1     |    U+007d |      0x7d |    0x7d00 |	**Didn't Match**
+|     \     |     1     |    U+005c |      0x5c |    0x5c00 |	**Didn't Match**
+|     ~     |     1     |    U+007e |      0x7e |    0x7e00 |	**Didn't Match**
+|     `     |     1     |    U+0060 |      0x60 |    0x6000 |	**Didn't Match**
+|     ,     |     1     |    U+002c |      0x2c |    0x2c00 |	**Didn't Match**
+|     .     |     1     |    U+002e |      0x2e |    0x2e00 |	**Didn't Match**
+|     ;     |     1     |    U+003b |      0x3b |    0x3b00 |	**Didn't Match**
+|     :     |     1     |    U+003a |      0x3a |    0x3a00 |	**Didn't Match**
+|     '     |     1     |    U+0027 |      0x27 |    0x2700 |	**Didn't Match**
+|     "     |     1     |    U+0022 |      0x22 |    0x2200 |	**Didn't Match**
+|   none    |     1     |    U+000a |      0x0a |    0x0a00 |	**Didn't Match**
+Output written successfully.
+
+
+Your Output:
+	**Didn't Match**
+./a.out -vvv -e UTF-16LE utf-8-special.txt 8to16LEsv3.txt                       -- BAD
+Failed: Verbose UTF-8-special to UTF-16LE verbosity did not match
+Correct Output:
+|     A     |     1     |    U+0041 |      0x41 |    0x4100 |	**Didn't Match**
+|   none    |     2     |    U+00c5 |    0xc385 |    0xc500 |	**Didn't Match**
+|   none    |     2     |    U+00c1 |    0xc381 |    0xc100 |	**Didn't Match**
+|   none    |     2     |    U+00c2 |    0xc382 |    0xc200 |	**Didn't Match**
+|   none    |     2     |    U+00c0 |    0xc380 |    0xc000 |	**Didn't Match**
+|   none    |     2     |    U+00c3 |    0xc383 |    0xc300 |	**Didn't Match**
+|   none    |     2     |    U+00c4 |    0xc384 |    0xc400 |	**Didn't Match**
+|   none    |     1     |    U+000a |      0x0a |    0x0a00 |	**Didn't Match**
+|     C     |     1     |    U+0043 |      0x43 |    0x4300 |	**Didn't Match**
+|     i     |     1     |    U+0069 |      0x69 |    0x6900 |	**Didn't Match**
+|     e     |     1     |    U+0065 |      0x65 |    0x6500 |	**Didn't Match**
+|     n     |     1     |    U+006e |      0x6e |    0x6e00 |	**Didn't Match**
+|     c     |     1     |    U+0063 |      0x63 |    0x6300 |	**Didn't Match**
+|     i     |     1     |    U+0069 |      0x69 |    0x6900 |	**Didn't Match**
+|     a     |     1     |    U+0061 |      0x61 |    0x6100 |	**Didn't Match**
+|     s     |     1     |    U+0073 |      0x73 |    0x7300 |	**Didn't Match**
+|           |     1     |    U+0020 |      0x20 |    0x2000 |	**Didn't Match**
+|     d     |     1     |    U+0064 |      0x64 |    0x6400 |	**Didn't Match**
+|     e     |     1     |    U+0065 |      0x65 |    0x6500 |	**Didn't Match**
+|           |     1     |    U+0020 |      0x20 |    0x2000 |	**Didn't Match**
+|     l     |     1     |    U+006c |      0x6c |    0x6c00 |	**Didn't Match**
+|     a     |     1     |    U+0061 |      0x61 |    0x6100 |	**Didn't Match**
+|           |     1     |    U+0020 |      0x20 |    0x2000 |	**Didn't Match**
+|     C     |     1     |    U+0043 |      0x43 |    0x4300 |	**Didn't Match**
+|     o     |     1     |    U+006f |      0x6f |    0x6f00 |	**Didn't Match**
+|     m     |     1     |    U+006d |      0x6d |    0x6d00 |	**Didn't Match**
+|     p     |     1     |    U+0070 |      0x70 |    0x7000 |	**Didn't Match**
+|     u     |     1     |    U+0075 |      0x75 |    0x7500 |	**Didn't Match**
+|     t     |     1     |    U+0074 |      0x74 |    0x7400 |	**Didn't Match**
+|     a     |     1     |    U+0061 |      0x61 |    0x6100 |	**Didn't Match**
+|     c     |     1     |    U+0063 |      0x63 |    0x6300 |	**Didn't Match**
+|     i     |     1     |    U+0069 |      0x69 |    0x6900 |	**Didn't Match**
+|   none    |     2     |    U+00f3 |    0xc3b3 |    0xf300 |	**Didn't Match**
+|     n     |     1     |    U+006e |      0x6e |    0x6e00 |	**Didn't Match**
+|   none    |     1     |    U+0009 |      0x09 |    0x0900 |	**Didn't Match**
+|   none    |     4     |   U+1f600 |0xf09f9880 |0x3dd800de |	**Didn't Match**
+|   none    |     1     |    U+0009 |      0x09 |    0x0900 |	**Didn't Match**
+|     S     |     1     |    U+0053 |      0x53 |    0x5300 |	**Didn't Match**
+|     p     |     1     |    U+0070 |      0x70 |    0x7000 |	**Didn't Match**
+|     a     |     1     |    U+0061 |      0x61 |    0x6100 |	**Didn't Match**
+|     n     |     1     |    U+006e |      0x6e |    0x6e00 |	**Didn't Match**
+|     i     |     1     |    U+0069 |      0x69 |    0x6900 |	**Didn't Match**
+|     s     |     1     |    U+0073 |      0x73 |    0x7300 |	**Didn't Match**
+|     h     |     1     |    U+0068 |      0x68 |    0x6800 |	**Didn't Match**
+|   none    |     1     |    U+000a |      0x0a |    0x0a00 |	**Didn't Match**
+|   none    |     2     |    U+0639 |    0xd8b9 |    0x3906 |	**Didn't Match**
+|   none    |     2     |    U+0644 |    0xd984 |    0x4406 |	**Didn't Match**
+|   none    |     2     |    U+0648 |    0xd988 |    0x4806 |	**Didn't Match**
+|   none    |     2     |    U+0645 |    0xd985 |    0x4506 |	**Didn't Match**
+|           |     1     |    U+0020 |      0x20 |    0x2000 |	**Didn't Match**
+|   none    |     2     |    U+0627 |    0xd8a7 |    0x2706 |	**Didn't Match**
+|   none    |     2     |    U+0644 |    0xd984 |    0x4406 |	**Didn't Match**
+|   none    |     2     |    U+0643 |    0xd983 |    0x4306 |	**Didn't Match**
+|   none    |     2     |    U+0645 |    0xd985 |    0x4506 |	**Didn't Match**
+|   none    |     2     |    U+0628 |    0xd8a8 |    0x2806 |	**Didn't Match**
+|   none    |     2     |    U+064a |    0xd98a |    0x4a06 |	**Didn't Match**
+|   none    |     2     |    U+0648 |    0xd988 |    0x4806 |	**Didn't Match**
+|   none    |     2     |    U+062a |    0xd8aa |    0x2a06 |	**Didn't Match**
+|   none    |     2     |    U+0631 |    0xd8b1 |    0x3106 |	**Didn't Match**
+|   none    |     1     |    U+0009 |      0x09 |    0x0900 |	**Didn't Match**
+|   none    |     1     |    U+0009 |      0x09 |    0x0900 |	**Didn't Match**
+|   none    |     1     |    U+0009 |      0x09 |    0x0900 |	**Didn't Match**
+|   none    |     1     |    U+0009 |      0x09 |    0x0900 |	**Didn't Match**
+|   none    |     4     |   U+1f601 |0xf09f9881 |0x3dd801de |	**Didn't Match**
+|   none    |     1     |    U+0009 |      0x09 |    0x0900 |	**Didn't Match**
+|     A     |     1     |    U+0041 |      0x41 |    0x4100 |	**Didn't Match**
+|     r     |     1     |    U+0072 |      0x72 |    0x7200 |	**Didn't Match**
+|     a     |     1     |    U+0061 |      0x61 |    0x6100 |	**Didn't Match**
+|     b     |     1     |    U+0062 |      0x62 |    0x6200 |	**Didn't Match**
+|     i     |     1     |    U+0069 |      0x69 |    0x6900 |	**Didn't Match**
+|     c     |     1     |    U+0063 |      0x63 |    0x6300 |	**Didn't Match**
+|   none    |     1     |    U+000a |      0x0a |    0x0a00 |	**Didn't Match**
+|   none    |     3     |    U+8ba1 |  0xe8aea1 |    0xa18b |	**Didn't Match**
+|   none    |     3     |    U+7b97 |  0xe7ae97 |    0x977b |	**Didn't Match**
+|   none    |     3     |    U+673a |  0xe69cba |    0x3a67 |	**Didn't Match**
+|   none    |     3     |    U+79d1 |  0xe7a791 |    0xd179 |	**Didn't Match**
+|   none    |     3     |    U+5b66 |  0xe5ada6 |    0x665b |	**Didn't Match**
+|   none    |     1     |    U+0009 |      0x09 |    0x0900 |	**Didn't Match**
+|   none    |     1     |    U+0009 |      0x09 |    0x0900 |	**Didn't Match**
+|   none    |     1     |    U+0009 |      0x09 |    0x0900 |	**Didn't Match**
+|   none    |     1     |    U+0009 |      0x09 |    0x0900 |	**Didn't Match**
+|   none    |     1     |    U+0009 |      0x09 |    0x0900 |	**Didn't Match**
+|   none    |     4     |   U+1f602 |0xf09f9882 |0x3dd802de |	**Didn't Match**
+|   none    |     1     |    U+0009 |      0x09 |    0x0900 |	**Didn't Match**
+|     C     |     1     |    U+0043 |      0x43 |    0x4300 |	**Didn't Match**
+|     h     |     1     |    U+0068 |      0x68 |    0x6800 |	**Didn't Match**
+|     i     |     1     |    U+0069 |      0x69 |    0x6900 |	**Didn't Match**
+|     n     |     1     |    U+006e |      0x6e |    0x6e00 |	**Didn't Match**
+|     e     |     1     |    U+0065 |      0x65 |    0x6500 |	**Didn't Match**
+|     s     |     1     |    U+0073 |      0x73 |    0x7300 |	**Didn't Match**
+|     e     |     1     |    U+0065 |      0x65 |    0x6500 |	**Didn't Match**
+|   none    |     1     |    U+000a |      0x0a |    0x0a00 |	**Didn't Match**
+|     C     |     1     |    U+0043 |      0x43 |    0x4300 |	**Didn't Match**
+|     i     |     1     |    U+0069 |      0x69 |    0x6900 |	**Didn't Match**
+|   none    |     2     |    U+00ea |    0xc3aa |    0xea00 |	**Didn't Match**
+|     n     |     1     |    U+006e |      0x6e |    0x6e00 |	**Didn't Match**
+|     c     |     1     |    U+0063 |      0x63 |    0x6300 |	**Didn't Match**
+|     i     |     1     |    U+0069 |      0x69 |    0x6900 |	**Didn't Match**
+|     a     |     1     |    U+0061 |      0x61 |    0x6100 |	**Didn't Match**
+|           |     1     |    U+0020 |      0x20 |    0x2000 |	**Didn't Match**
+|     d     |     1     |    U+0064 |      0x64 |    0x6400 |	**Didn't Match**
+|     a     |     1     |    U+0061 |      0x61 |    0x6100 |	**Didn't Match**
+|           |     1     |    U+0020 |      0x20 |    0x2000 |	**Didn't Match**
+|     C     |     1     |    U+0043 |      0x43 |    0x4300 |	**Didn't Match**
+|     o     |     1     |    U+006f |      0x6f |    0x6f00 |	**Didn't Match**
+|     m     |     1     |    U+006d |      0x6d |    0x6d00 |	**Didn't Match**
+|     p     |     1     |    U+0070 |      0x70 |    0x7000 |	**Didn't Match**
+|     u     |     1     |    U+0075 |      0x75 |    0x7500 |	**Didn't Match**
+|     t     |     1     |    U+0074 |      0x74 |    0x7400 |	**Didn't Match**
+|     a     |     1     |    U+0061 |      0x61 |    0x6100 |	**Didn't Match**
+|   none    |     2     |    U+00e7 |    0xc3a7 |    0xe700 |	**Didn't Match**
+|   none    |     2     |    U+00e3 |    0xc3a3 |    0xe300 |	**Didn't Match**
+|     o     |     1     |    U+006f |      0x6f |    0x6f00 |	**Didn't Match**
+|   none    |     1     |    U+0009 |      0x09 |    0x0900 |	**Didn't Match**
+|   none    |     1     |    U+0009 |      0x09 |    0x0900 |	**Didn't Match**
+|   none    |     4     |   U+1f633 |0xf09f98b3 |0x3dd833de |	**Didn't Match**
+|   none    |     1     |    U+0009 |      0x09 |    0x0900 |	**Didn't Match**
+|     P     |     1     |    U+0050 |      0x50 |    0x5000 |	**Didn't Match**
+|     o     |     1     |    U+006f |      0x6f |    0x6f00 |	**Didn't Match**
+|     r     |     1     |    U+0072 |      0x72 |    0x7200 |	**Didn't Match**
+|     t     |     1     |    U+0074 |      0x74 |    0x7400 |	**Didn't Match**
+|     u     |     1     |    U+0075 |      0x75 |    0x7500 |	**Didn't Match**
+|     g     |     1     |    U+0067 |      0x67 |    0x6700 |	**Didn't Match**
+|     u     |     1     |    U+0075 |      0x75 |    0x7500 |	**Didn't Match**
+|     e     |     1     |    U+0065 |      0x65 |    0x6500 |	**Didn't Match**
+|     s     |     1     |    U+0073 |      0x73 |    0x7300 |	**Didn't Match**
+|     e     |     1     |    U+0065 |      0x65 |    0x6500 |	**Didn't Match**
+|   none    |     1     |    U+000a |      0x0a |    0x0a00 |	**Didn't Match**
+|   none    |     2     |    U+05de |    0xd79e |    0xde05 |	**Didn't Match**
+|   none    |     2     |    U+05d3 |    0xd793 |    0xd305 |	**Didn't Match**
+|   none    |     2     |    U+05e2 |    0xd7a2 |    0xe205 |	**Didn't Match**
+|   none    |     2     |    U+05d9 |    0xd799 |    0xd905 |	**Didn't Match**
+|           |     1     |    U+0020 |      0x20 |    0x2000 |	**Didn't Match**
+|   none    |     2     |    U+05d4 |    0xd794 |    0xd405 |	**Didn't Match**
+|   none    |     2     |    U+05de |    0xd79e |    0xde05 |	**Didn't Match**
+|   none    |     2     |    U+05d7 |    0xd797 |    0xd705 |	**Didn't Match**
+|   none    |     2     |    U+05e9 |    0xd7a9 |    0xe905 |	**Didn't Match**
+|   none    |     2     |    U+05d1 |    0xd791 |    0xd105 |	**Didn't Match**
+|   none    |     1     |    U+0009 |      0x09 |    0x0900 |	**Didn't Match**
+|   none    |     1     |    U+0009 |      0x09 |    0x0900 |	**Didn't Match**
+|   none    |     1     |    U+0009 |      0x09 |    0x0900 |	**Didn't Match**
+|   none    |     1     |    U+0009 |      0x09 |    0x0900 |	**Didn't Match**
+|   none    |     1     |    U+0009 |      0x09 |    0x0900 |	**Didn't Match**
+|   none    |     4     |   U+1f60e |0xf09f988e |0x3dd80ede |	**Didn't Match**
+|   none    |     1     |    U+0009 |      0x09 |    0x0900 |	**Didn't Match**
+|     H     |     1     |    U+0048 |      0x48 |    0x4800 |	**Didn't Match**
+|     e     |     1     |    U+0065 |      0x65 |    0x6500 |	**Didn't Match**
+|     b     |     1     |    U+0062 |      0x62 |    0x6200 |	**Didn't Match**
+|     r     |     1     |    U+0072 |      0x72 |    0x7200 |	**Didn't Match**
+|     e     |     1     |    U+0065 |      0x65 |    0x6500 |	**Didn't Match**
+|     w     |     1     |    U+0077 |      0x77 |    0x7700 |	**Didn't Match**
+|   none    |     1     |    U+000a |      0x0a |    0x0a00 |	**Didn't Match**
+|   none    |     2     |    U+0418 |    0xd098 |    0x1804 |	**Didn't Match**
+|   none    |     2     |    U+043d |    0xd0bd |    0x3d04 |	**Didn't Match**
+|   none    |     2     |    U+0444 |    0xd184 |    0x4404 |	**Didn't Match**
+|   none    |     2     |    U+043e |    0xd0be |    0x3e04 |	**Didn't Match**
+|   none    |     2     |    U+0440 |    0xd180 |    0x4004 |	**Didn't Match**
+|   none    |     2     |    U+043c |    0xd0bc |    0x3c04 |	**Didn't Match**
+|   none    |     2     |    U+0430 |    0xd0b0 |    0x3004 |	**Didn't Match**
+|   none    |     2     |    U+0442 |    0xd182 |    0x4204 |	**Didn't Match**
+|   none    |     2     |    U+0438 |    0xd0b8 |    0x3804 |	**Didn't Match**
+|   none    |     2     |    U+043a |    0xd0ba |    0x3a04 |	**Didn't Match**
+|   none    |     2     |    U+0430 |    0xd0b0 |    0x3004 |	**Didn't Match**
+|   none    |     1     |    U+0009 |      0x09 |    0x0900 |	**Didn't Match**
+|   none    |     1     |    U+0009 |      0x09 |    0x0900 |	**Didn't Match**
+|   none    |     1     |    U+0009 |      0x09 |    0x0900 |	**Didn't Match**
+|   none    |     1     |    U+0009 |      0x09 |    0x0900 |	**Didn't Match**
+|   none    |     1     |    U+0009 |      0x09 |    0x0900 |	**Didn't Match**
+|   none    |     4     |   U+1f622 |0xf09f98a2 |0x3dd822de |	**Didn't Match**
+|   none    |     1     |    U+0009 |      0x09 |    0x0900 |	**Didn't Match**
+|     R     |     1     |    U+0052 |      0x52 |    0x5200 |	**Didn't Match**
+|     u     |     1     |    U+0075 |      0x75 |    0x7500 |	**Didn't Match**
+|     s     |     1     |    U+0073 |      0x73 |    0x7300 |	**Didn't Match**
+|     s     |     1     |    U+0073 |      0x73 |    0x7300 |	**Didn't Match**
+|     i     |     1     |    U+0069 |      0x69 |    0x6900 |	**Didn't Match**
+|     a     |     1     |    U+0061 |      0x61 |    0x6100 |	**Didn't Match**
+|     n     |     1     |    U+006e |      0x6e |    0x6e00 |	**Didn't Match**
+|   none    |     1     |    U+000a |      0x0a |    0x0a00 |	**Didn't Match**
+|   none    |     3     |    U+cef4 |  0xecbbb4 |    0xf4ce |	**Didn't Match**
+|   none    |     3     |    U+d4e8 |  0xed93a8 |    0xe8d4 |	**Didn't Match**
+|   none    |     3     |    U+d130 |  0xed84b0 |    0x30d1 |	**Didn't Match**
+|           |     1     |    U+0020 |      0x20 |    0x2000 |	**Didn't Match**
+|   none    |     3     |    U+acfc |  0xeab3bc |    0xfcac |	**Didn't Match**
+|   none    |     3     |    U+d559 |  0xed9599 |    0x59d5 |	**Didn't Match**
+|   none    |     1     |    U+0009 |      0x09 |    0x0900 |	**Didn't Match**
+|   none    |     1     |    U+0009 |      0x09 |    0x0900 |	**Didn't Match**
+|   none    |     1     |    U+0009 |      0x09 |    0x0900 |	**Didn't Match**
+|   none    |     1     |    U+0009 |      0x09 |    0x0900 |	**Didn't Match**
+|   none    |     1     |    U+0009 |      0x09 |    0x0900 |	**Didn't Match**
+|   none    |     4     |   U+1f61d |0xf09f989d |0x3dd81dde |	**Didn't Match**
+|   none    |     1     |    U+0009 |      0x09 |    0x0900 |	**Didn't Match**
+|     K     |     1     |    U+004b |      0x4b |    0x4b00 |	**Didn't Match**
+|     o     |     1     |    U+006f |      0x6f |    0x6f00 |	**Didn't Match**
+|     r     |     1     |    U+0072 |      0x72 |    0x7200 |	**Didn't Match**
+|     e     |     1     |    U+0065 |      0x65 |    0x6500 |	**Didn't Match**
+|     a     |     1     |    U+0061 |      0x61 |    0x6100 |	**Didn't Match**
+|     n     |     1     |    U+006e |      0x6e |    0x6e00 |	**Didn't Match**
+|   none    |     1     |    U+000a |      0x0a |    0x0a00 |	**Didn't Match**
+|   none    |     3     |    U+30b3 |  0xe382b3 |    0xb330 |	**Didn't Match**
+|   none    |     3     |    U+30f3 |  0xe383b3 |    0xf330 |	**Didn't Match**
+|   none    |     3     |    U+30d4 |  0xe38394 |    0xd430 |	**Didn't Match**
+|   none    |     3     |    U+30e5 |  0xe383a5 |    0xe530 |	**Didn't Match**
+|   none    |     3     |    U+30fc |  0xe383bc |    0xfc30 |	**Didn't Match**
+|   none    |     3     |    U+30bf |  0xe382bf |    0xbf30 |	**Didn't Match**
+|   none    |     3     |    U+30b5 |  0xe382b5 |    0xb530 |	**Didn't Match**
+|   none    |     3     |    U+30a4 |  0xe382a4 |    0xa430 |	**Didn't Match**
+|   none    |     3     |    U+30a8 |  0xe382a8 |    0xa830 |	**Didn't Match**
+|   none    |     3     |    U+30f3 |  0xe383b3 |    0xf330 |	**Didn't Match**
+|   none    |     3     |    U+30b9 |  0xe382b9 |    0xb930 |	**Didn't Match**
+|   none    |     1     |    U+0009 |      0x09 |    0x0900 |	**Didn't Match**
+|   none    |     1     |    U+0009 |      0x09 |    0x0900 |	**Didn't Match**
+|   none    |     4     |   U+1f611 |0xf09f9891 |0x3dd811de |	**Didn't Match**
+|   none    |     1     |    U+0009 |      0x09 |    0x0900 |	**Didn't Match**
+|     J     |     1     |    U+004a |      0x4a |    0x4a00 |	**Didn't Match**
+|     a     |     1     |    U+0061 |      0x61 |    0x6100 |	**Didn't Match**
+|     p     |     1     |    U+0070 |      0x70 |    0x7000 |	**Didn't Match**
+|     a     |     1     |    U+0061 |      0x61 |    0x6100 |	**Didn't Match**
+|     n     |     1     |    U+006e |      0x6e |    0x6e00 |	**Didn't Match**
+|     e     |     1     |    U+0065 |      0x65 |    0x6500 |	**Didn't Match**
+|     s     |     1     |    U+0073 |      0x73 |    0x7300 |	**Didn't Match**
+|     e     |     1     |    U+0065 |      0x65 |    0x6500 |	**Didn't Match**
+|   none    |     1     |    U+000a |      0x0a |    0x0a00 |	**Didn't Match**
+Output written successfully.
+
+
+Your Output:
+	**Didn't Match**
+./a.out -vvvvvv -e UTF-16LE utf-8.txt 8to16LEv4.txt                             -- BAD
+Failed: Verbose UTF-8 to UTF-16LE verbosity did not match
+Correct Output:
+|     A     |     1     |    U+0041 |      0x41 |    0x4100 |	**Didn't Match**
+|     B     |     1     |    U+0042 |      0x42 |    0x4200 |	**Didn't Match**
+|     C     |     1     |    U+0043 |      0x43 |    0x4300 |	**Didn't Match**
+|     D     |     1     |    U+0044 |      0x44 |    0x4400 |	**Didn't Match**
+|     E     |     1     |    U+0045 |      0x45 |    0x4500 |	**Didn't Match**
+|     F     |     1     |    U+0046 |      0x46 |    0x4600 |	**Didn't Match**
+|     G     |     1     |    U+0047 |      0x47 |    0x4700 |	**Didn't Match**
+|     H     |     1     |    U+0048 |      0x48 |    0x4800 |	**Didn't Match**
+|     I     |     1     |    U+0049 |      0x49 |    0x4900 |	**Didn't Match**
+|     J     |     1     |    U+004a |      0x4a |    0x4a00 |	**Didn't Match**
+|     K     |     1     |    U+004b |      0x4b |    0x4b00 |	**Didn't Match**
+|     L     |     1     |    U+004c |      0x4c |    0x4c00 |	**Didn't Match**
+|     M     |     1     |    U+004d |      0x4d |    0x4d00 |	**Didn't Match**
+|     N     |     1     |    U+004e |      0x4e |    0x4e00 |	**Didn't Match**
+|     O     |     1     |    U+004f |      0x4f |    0x4f00 |	**Didn't Match**
+|     P     |     1     |    U+0050 |      0x50 |    0x5000 |	**Didn't Match**
+|     Q     |     1     |    U+0051 |      0x51 |    0x5100 |	**Didn't Match**
+|     R     |     1     |    U+0052 |      0x52 |    0x5200 |	**Didn't Match**
+|     S     |     1     |    U+0053 |      0x53 |    0x5300 |	**Didn't Match**
+|     T     |     1     |    U+0054 |      0x54 |    0x5400 |	**Didn't Match**
+|     U     |     1     |    U+0055 |      0x55 |    0x5500 |	**Didn't Match**
+|     V     |     1     |    U+0056 |      0x56 |    0x5600 |	**Didn't Match**
+|     W     |     1     |    U+0057 |      0x57 |    0x5700 |	**Didn't Match**
+|     X     |     1     |    U+0058 |      0x58 |    0x5800 |	**Didn't Match**
+|     Y     |     1     |    U+0059 |      0x59 |    0x5900 |	**Didn't Match**
+|     Z     |     1     |    U+005a |      0x5a |    0x5a00 |	**Didn't Match**
+|   none    |     1     |    U+000a |      0x0a |    0x0a00 |	**Didn't Match**
+|     1     |     1     |    U+0031 |      0x31 |    0x3100 |	**Didn't Match**
+|     2     |     1     |    U+0032 |      0x32 |    0x3200 |	**Didn't Match**
+|     3     |     1     |    U+0033 |      0x33 |    0x3300 |	**Didn't Match**
+|     4     |     1     |    U+0034 |      0x34 |    0x3400 |	**Didn't Match**
+|     5     |     1     |    U+0035 |      0x35 |    0x3500 |	**Didn't Match**
+|     6     |     1     |    U+0036 |      0x36 |    0x3600 |	**Didn't Match**
+|     7     |     1     |    U+0037 |      0x37 |    0x3700 |	**Didn't Match**
+|     8     |     1     |    U+0038 |      0x38 |    0x3800 |	**Didn't Match**
+|     9     |     1     |    U+0039 |      0x39 |    0x3900 |	**Didn't Match**
+|     0     |     1     |    U+0030 |      0x30 |    0x3000 |	**Didn't Match**
+|   none    |     1     |    U+000a |      0x0a |    0x0a00 |	**Didn't Match**
+|     a     |     1     |    U+0061 |      0x61 |    0x6100 |	**Didn't Match**
+|     b     |     1     |    U+0062 |      0x62 |    0x6200 |	**Didn't Match**
+|     c     |     1     |    U+0063 |      0x63 |    0x6300 |	**Didn't Match**
+|     d     |     1     |    U+0064 |      0x64 |    0x6400 |	**Didn't Match**
+|     e     |     1     |    U+0065 |      0x65 |    0x6500 |	**Didn't Match**
+|     f     |     1     |    U+0066 |      0x66 |    0x6600 |	**Didn't Match**
+|     g     |     1     |    U+0067 |      0x67 |    0x6700 |	**Didn't Match**
+|     h     |     1     |    U+0068 |      0x68 |    0x6800 |	**Didn't Match**
+|     i     |     1     |    U+0069 |      0x69 |    0x6900 |	**Didn't Match**
+|     j     |     1     |    U+006a |      0x6a |    0x6a00 |	**Didn't Match**
+|     k     |     1     |    U+006b |      0x6b |    0x6b00 |	**Didn't Match**
+|     l     |     1     |    U+006c |      0x6c |    0x6c00 |	**Didn't Match**
+|     m     |     1     |    U+006d |      0x6d |    0x6d00 |	**Didn't Match**
+|     n     |     1     |    U+006e |      0x6e |    0x6e00 |	**Didn't Match**
+|     o     |     1     |    U+006f |      0x6f |    0x6f00 |	**Didn't Match**
+|     p     |     1     |    U+0070 |      0x70 |    0x7000 |	**Didn't Match**
+|     q     |     1     |    U+0071 |      0x71 |    0x7100 |	**Didn't Match**
+|     r     |     1     |    U+0072 |      0x72 |    0x7200 |	**Didn't Match**
+|     s     |     1     |    U+0073 |      0x73 |    0x7300 |	**Didn't Match**
+|     t     |     1     |    U+0074 |      0x74 |    0x7400 |	**Didn't Match**
+|     u     |     1     |    U+0075 |      0x75 |    0x7500 |	**Didn't Match**
+|     v     |     1     |    U+0076 |      0x76 |    0x7600 |	**Didn't Match**
+|     w     |     1     |    U+0077 |      0x77 |    0x7700 |	**Didn't Match**
+|     x     |     1     |    U+0078 |      0x78 |    0x7800 |	**Didn't Match**
+|     y     |     1     |    U+0079 |      0x79 |    0x7900 |	**Didn't Match**
+|     z     |     1     |    U+007a |      0x7a |    0x7a00 |	**Didn't Match**
+|   none    |     1     |    U+000a |      0x0a |    0x0a00 |	**Didn't Match**
+|   none    |     1     |    U+0009 |      0x09 |    0x0900 |	**Didn't Match**
+|           |     1     |    U+0020 |      0x20 |    0x2000 |	**Didn't Match**
+|     !     |     1     |    U+0021 |      0x21 |    0x2100 |	**Didn't Match**
+|     !     |     1     |    U+0021 |      0x21 |    0x2100 |	**Didn't Match**
+|     @     |     1     |    U+0040 |      0x40 |    0x4000 |	**Didn't Match**
+|     #     |     1     |    U+0023 |      0x23 |    0x2300 |	**Didn't Match**
+|     $     |     1     |    U+0024 |      0x24 |    0x2400 |	**Didn't Match**
+|     %     |     1     |    U+0025 |      0x25 |    0x2500 |	**Didn't Match**
+|     ^     |     1     |    U+005e |      0x5e |    0x5e00 |	**Didn't Match**
+|     &     |     1     |    U+0026 |      0x26 |    0x2600 |	**Didn't Match**
+|     *     |     1     |    U+002a |      0x2a |    0x2a00 |	**Didn't Match**
+|     (     |     1     |    U+0028 |      0x28 |    0x2800 |	**Didn't Match**
+|     )     |     1     |    U+0029 |      0x29 |    0x2900 |	**Didn't Match**
+|     -     |     1     |    U+002d |      0x2d |    0x2d00 |	**Didn't Match**
+|     _     |     1     |    U+005f |      0x5f |    0x5f00 |	**Didn't Match**
+|     +     |     1     |    U+002b |      0x2b |    0x2b00 |	**Didn't Match**
+|     =     |     1     |    U+003d |      0x3d |    0x3d00 |	**Didn't Match**
+|     ?     |     1     |    U+003f |      0x3f |    0x3f00 |	**Didn't Match**
+|     /     |     1     |    U+002f |      0x2f |    0x2f00 |	**Didn't Match**
+|     [     |     1     |    U+005b |      0x5b |    0x5b00 |	**Didn't Match**
+|     ]     |     1     |    U+005d |      0x5d |    0x5d00 |	**Didn't Match**
+|     {     |     1     |    U+007b |      0x7b |    0x7b00 |	**Didn't Match**
+|     }     |     1     |    U+007d |      0x7d |    0x7d00 |	**Didn't Match**
+|     \     |     1     |    U+005c |      0x5c |    0x5c00 |	**Didn't Match**
+|     ~     |     1     |    U+007e |      0x7e |    0x7e00 |	**Didn't Match**
+|     `     |     1     |    U+0060 |      0x60 |    0x6000 |	**Didn't Match**
+|     ,     |     1     |    U+002c |      0x2c |    0x2c00 |	**Didn't Match**
+|     .     |     1     |    U+002e |      0x2e |    0x2e00 |	**Didn't Match**
+|     ;     |     1     |    U+003b |      0x3b |    0x3b00 |	**Didn't Match**
+|     :     |     1     |    U+003a |      0x3a |    0x3a00 |	**Didn't Match**
+|     '     |     1     |    U+0027 |      0x27 |    0x2700 |	**Didn't Match**
+|     "     |     1     |    U+0022 |      0x22 |    0x2200 |	**Didn't Match**
+|   none    |     1     |    U+000a |      0x0a |    0x0a00 |	**Didn't Match**
+Output written successfully.
+
+
+Your Output:
+	**Didn't Match**
+./a.out -vvvvvv -e UTF-16LE utf-8-special.txt 8to16LEsv4.txt                    -- BAD
+Failed: Verbose UTF-8-special to UTF-16LE verbosity did not match
+Correct Output:
+|     A     |     1     |    U+0041 |      0x41 |    0x4100 |	**Didn't Match**
+|   none    |     2     |    U+00c5 |    0xc385 |    0xc500 |	**Didn't Match**
+|   none    |     2     |    U+00c1 |    0xc381 |    0xc100 |	**Didn't Match**
+|   none    |     2     |    U+00c2 |    0xc382 |    0xc200 |	**Didn't Match**
+|   none    |     2     |    U+00c0 |    0xc380 |    0xc000 |	**Didn't Match**
+|   none    |     2     |    U+00c3 |    0xc383 |    0xc300 |	**Didn't Match**
+|   none    |     2     |    U+00c4 |    0xc384 |    0xc400 |	**Didn't Match**
+|   none    |     1     |    U+000a |      0x0a |    0x0a00 |	**Didn't Match**
+|     C     |     1     |    U+0043 |      0x43 |    0x4300 |	**Didn't Match**
+|     i     |     1     |    U+0069 |      0x69 |    0x6900 |	**Didn't Match**
+|     e     |     1     |    U+0065 |      0x65 |    0x6500 |	**Didn't Match**
+|     n     |     1     |    U+006e |      0x6e |    0x6e00 |	**Didn't Match**
+|     c     |     1     |    U+0063 |      0x63 |    0x6300 |	**Didn't Match**
+|     i     |     1     |    U+0069 |      0x69 |    0x6900 |	**Didn't Match**
+|     a     |     1     |    U+0061 |      0x61 |    0x6100 |	**Didn't Match**
+|     s     |     1     |    U+0073 |      0x73 |    0x7300 |	**Didn't Match**
+|           |     1     |    U+0020 |      0x20 |    0x2000 |	**Didn't Match**
+|     d     |     1     |    U+0064 |      0x64 |    0x6400 |	**Didn't Match**
+|     e     |     1     |    U+0065 |      0x65 |    0x6500 |	**Didn't Match**
+|           |     1     |    U+0020 |      0x20 |    0x2000 |	**Didn't Match**
+|     l     |     1     |    U+006c |      0x6c |    0x6c00 |	**Didn't Match**
+|     a     |     1     |    U+0061 |      0x61 |    0x6100 |	**Didn't Match**
+|           |     1     |    U+0020 |      0x20 |    0x2000 |	**Didn't Match**
+|     C     |     1     |    U+0043 |      0x43 |    0x4300 |	**Didn't Match**
+|     o     |     1     |    U+006f |      0x6f |    0x6f00 |	**Didn't Match**
+|     m     |     1     |    U+006d |      0x6d |    0x6d00 |	**Didn't Match**
+|     p     |     1     |    U+0070 |      0x70 |    0x7000 |	**Didn't Match**
+|     u     |     1     |    U+0075 |      0x75 |    0x7500 |	**Didn't Match**
+|     t     |     1     |    U+0074 |      0x74 |    0x7400 |	**Didn't Match**
+|     a     |     1     |    U+0061 |      0x61 |    0x6100 |	**Didn't Match**
+|     c     |     1     |    U+0063 |      0x63 |    0x6300 |	**Didn't Match**
+|     i     |     1     |    U+0069 |      0x69 |    0x6900 |	**Didn't Match**
+|   none    |     2     |    U+00f3 |    0xc3b3 |    0xf300 |	**Didn't Match**
+|     n     |     1     |    U+006e |      0x6e |    0x6e00 |	**Didn't Match**
+|   none    |     1     |    U+0009 |      0x09 |    0x0900 |	**Didn't Match**
+|   none    |     4     |   U+1f600 |0xf09f9880 |0x3dd800de |	**Didn't Match**
+|   none    |     1     |    U+0009 |      0x09 |    0x0900 |	**Didn't Match**
+|     S     |     1     |    U+0053 |      0x53 |    0x5300 |	**Didn't Match**
+|     p     |     1     |    U+0070 |      0x70 |    0x7000 |	**Didn't Match**
+|     a     |     1     |    U+0061 |      0x61 |    0x6100 |	**Didn't Match**
+|     n     |     1     |    U+006e |      0x6e |    0x6e00 |	**Didn't Match**
+|     i     |     1     |    U+0069 |      0x69 |    0x6900 |	**Didn't Match**
+|     s     |     1     |    U+0073 |      0x73 |    0x7300 |	**Didn't Match**
+|     h     |     1     |    U+0068 |      0x68 |    0x6800 |	**Didn't Match**
+|   none    |     1     |    U+000a |      0x0a |    0x0a00 |	**Didn't Match**
+|   none    |     2     |    U+0639 |    0xd8b9 |    0x3906 |	**Didn't Match**
+|   none    |     2     |    U+0644 |    0xd984 |    0x4406 |	**Didn't Match**
+|   none    |     2     |    U+0648 |    0xd988 |    0x4806 |	**Didn't Match**
+|   none    |     2     |    U+0645 |    0xd985 |    0x4506 |	**Didn't Match**
+|           |     1     |    U+0020 |      0x20 |    0x2000 |	**Didn't Match**
+|   none    |     2     |    U+0627 |    0xd8a7 |    0x2706 |	**Didn't Match**
+|   none    |     2     |    U+0644 |    0xd984 |    0x4406 |	**Didn't Match**
+|   none    |     2     |    U+0643 |    0xd983 |    0x4306 |	**Didn't Match**
+|   none    |     2     |    U+0645 |    0xd985 |    0x4506 |	**Didn't Match**
+|   none    |     2     |    U+0628 |    0xd8a8 |    0x2806 |	**Didn't Match**
+|   none    |     2     |    U+064a |    0xd98a |    0x4a06 |	**Didn't Match**
+|   none    |     2     |    U+0648 |    0xd988 |    0x4806 |	**Didn't Match**
+|   none    |     2     |    U+062a |    0xd8aa |    0x2a06 |	**Didn't Match**
+|   none    |     2     |    U+0631 |    0xd8b1 |    0x3106 |	**Didn't Match**
+|   none    |     1     |    U+0009 |      0x09 |    0x0900 |	**Didn't Match**
+|   none    |     1     |    U+0009 |      0x09 |    0x0900 |	**Didn't Match**
+|   none    |     1     |    U+0009 |      0x09 |    0x0900 |	**Didn't Match**
+|   none    |     1     |    U+0009 |      0x09 |    0x0900 |	**Didn't Match**
+|   none    |     4     |   U+1f601 |0xf09f9881 |0x3dd801de |	**Didn't Match**
+|   none    |     1     |    U+0009 |      0x09 |    0x0900 |	**Didn't Match**
+|     A     |     1     |    U+0041 |      0x41 |    0x4100 |	**Didn't Match**
+|     r     |     1     |    U+0072 |      0x72 |    0x7200 |	**Didn't Match**
+|     a     |     1     |    U+0061 |      0x61 |    0x6100 |	**Didn't Match**
+|     b     |     1     |    U+0062 |      0x62 |    0x6200 |	**Didn't Match**
+|     i     |     1     |    U+0069 |      0x69 |    0x6900 |	**Didn't Match**
+|     c     |     1     |    U+0063 |      0x63 |    0x6300 |	**Didn't Match**
+|   none    |     1     |    U+000a |      0x0a |    0x0a00 |	**Didn't Match**
+|   none    |     3     |    U+8ba1 |  0xe8aea1 |    0xa18b |	**Didn't Match**
+|   none    |     3     |    U+7b97 |  0xe7ae97 |    0x977b |	**Didn't Match**
+|   none    |     3     |    U+673a |  0xe69cba |    0x3a67 |	**Didn't Match**
+|   none    |     3     |    U+79d1 |  0xe7a791 |    0xd179 |	**Didn't Match**
+|   none    |     3     |    U+5b66 |  0xe5ada6 |    0x665b |	**Didn't Match**
+|   none    |     1     |    U+0009 |      0x09 |    0x0900 |	**Didn't Match**
+|   none    |     1     |    U+0009 |      0x09 |    0x0900 |	**Didn't Match**
+|   none    |     1     |    U+0009 |      0x09 |    0x0900 |	**Didn't Match**
+|   none    |     1     |    U+0009 |      0x09 |    0x0900 |	**Didn't Match**
+|   none    |     1     |    U+0009 |      0x09 |    0x0900 |	**Didn't Match**
+|   none    |     4     |   U+1f602 |0xf09f9882 |0x3dd802de |	**Didn't Match**
+|   none    |     1     |    U+0009 |      0x09 |    0x0900 |	**Didn't Match**
+|     C     |     1     |    U+0043 |      0x43 |    0x4300 |	**Didn't Match**
+|     h     |     1     |    U+0068 |      0x68 |    0x6800 |	**Didn't Match**
+|     i     |     1     |    U+0069 |      0x69 |    0x6900 |	**Didn't Match**
+|     n     |     1     |    U+006e |      0x6e |    0x6e00 |	**Didn't Match**
+|     e     |     1     |    U+0065 |      0x65 |    0x6500 |	**Didn't Match**
+|     s     |     1     |    U+0073 |      0x73 |    0x7300 |	**Didn't Match**
+|     e     |     1     |    U+0065 |      0x65 |    0x6500 |	**Didn't Match**
+|   none    |     1     |    U+000a |      0x0a |    0x0a00 |	**Didn't Match**
+|     C     |     1     |    U+0043 |      0x43 |    0x4300 |	**Didn't Match**
+|     i     |     1     |    U+0069 |      0x69 |    0x6900 |	**Didn't Match**
+|   none    |     2     |    U+00ea |    0xc3aa |    0xea00 |	**Didn't Match**
+|     n     |     1     |    U+006e |      0x6e |    0x6e00 |	**Didn't Match**
+|     c     |     1     |    U+0063 |      0x63 |    0x6300 |	**Didn't Match**
+|     i     |     1     |    U+0069 |      0x69 |    0x6900 |	**Didn't Match**
+|     a     |     1     |    U+0061 |      0x61 |    0x6100 |	**Didn't Match**
+|           |     1     |    U+0020 |      0x20 |    0x2000 |	**Didn't Match**
+|     d     |     1     |    U+0064 |      0x64 |    0x6400 |	**Didn't Match**
+|     a     |     1     |    U+0061 |      0x61 |    0x6100 |	**Didn't Match**
+|           |     1     |    U+0020 |      0x20 |    0x2000 |	**Didn't Match**
+|     C     |     1     |    U+0043 |      0x43 |    0x4300 |	**Didn't Match**
+|     o     |     1     |    U+006f |      0x6f |    0x6f00 |	**Didn't Match**
+|     m     |     1     |    U+006d |      0x6d |    0x6d00 |	**Didn't Match**
+|     p     |     1     |    U+0070 |      0x70 |    0x7000 |	**Didn't Match**
+|     u     |     1     |    U+0075 |      0x75 |    0x7500 |	**Didn't Match**
+|     t     |     1     |    U+0074 |      0x74 |    0x7400 |	**Didn't Match**
+|     a     |     1     |    U+0061 |      0x61 |    0x6100 |	**Didn't Match**
+|   none    |     2     |    U+00e7 |    0xc3a7 |    0xe700 |	**Didn't Match**
+|   none    |     2     |    U+00e3 |    0xc3a3 |    0xe300 |	**Didn't Match**
+|     o     |     1     |    U+006f |      0x6f |    0x6f00 |	**Didn't Match**
+|   none    |     1     |    U+0009 |      0x09 |    0x0900 |	**Didn't Match**
+|   none    |     1     |    U+0009 |      0x09 |    0x0900 |	**Didn't Match**
+|   none    |     4     |   U+1f633 |0xf09f98b3 |0x3dd833de |	**Didn't Match**
+|   none    |     1     |    U+0009 |      0x09 |    0x0900 |	**Didn't Match**
+|     P     |     1     |    U+0050 |      0x50 |    0x5000 |	**Didn't Match**
+|     o     |     1     |    U+006f |      0x6f |    0x6f00 |	**Didn't Match**
+|     r     |     1     |    U+0072 |      0x72 |    0x7200 |	**Didn't Match**
+|     t     |     1     |    U+0074 |      0x74 |    0x7400 |	**Didn't Match**
+|     u     |     1     |    U+0075 |      0x75 |    0x7500 |	**Didn't Match**
+|     g     |     1     |    U+0067 |      0x67 |    0x6700 |	**Didn't Match**
+|     u     |     1     |    U+0075 |      0x75 |    0x7500 |	**Didn't Match**
+|     e     |     1     |    U+0065 |      0x65 |    0x6500 |	**Didn't Match**
+|     s     |     1     |    U+0073 |      0x73 |    0x7300 |	**Didn't Match**
+|     e     |     1     |    U+0065 |      0x65 |    0x6500 |	**Didn't Match**
+|   none    |     1     |    U+000a |      0x0a |    0x0a00 |	**Didn't Match**
+|   none    |     2     |    U+05de |    0xd79e |    0xde05 |	**Didn't Match**
+|   none    |     2     |    U+05d3 |    0xd793 |    0xd305 |	**Didn't Match**
+|   none    |     2     |    U+05e2 |    0xd7a2 |    0xe205 |	**Didn't Match**
+|   none    |     2     |    U+05d9 |    0xd799 |    0xd905 |	**Didn't Match**
+|           |     1     |    U+0020 |      0x20 |    0x2000 |	**Didn't Match**
+|   none    |     2     |    U+05d4 |    0xd794 |    0xd405 |	**Didn't Match**
+|   none    |     2     |    U+05de |    0xd79e |    0xde05 |	**Didn't Match**
+|   none    |     2     |    U+05d7 |    0xd797 |    0xd705 |	**Didn't Match**
+|   none    |     2     |    U+05e9 |    0xd7a9 |    0xe905 |	**Didn't Match**
+|   none    |     2     |    U+05d1 |    0xd791 |    0xd105 |	**Didn't Match**
+|   none    |     1     |    U+0009 |      0x09 |    0x0900 |	**Didn't Match**
+|   none    |     1     |    U+0009 |      0x09 |    0x0900 |	**Didn't Match**
+|   none    |     1     |    U+0009 |      0x09 |    0x0900 |	**Didn't Match**
+|   none    |     1     |    U+0009 |      0x09 |    0x0900 |	**Didn't Match**
+|   none    |     1     |    U+0009 |      0x09 |    0x0900 |	**Didn't Match**
+|   none    |     4     |   U+1f60e |0xf09f988e |0x3dd80ede |	**Didn't Match**
+|   none    |     1     |    U+0009 |      0x09 |    0x0900 |	**Didn't Match**
+|     H     |     1     |    U+0048 |      0x48 |    0x4800 |	**Didn't Match**
+|     e     |     1     |    U+0065 |      0x65 |    0x6500 |	**Didn't Match**
+|     b     |     1     |    U+0062 |      0x62 |    0x6200 |	**Didn't Match**
+|     r     |     1     |    U+0072 |      0x72 |    0x7200 |	**Didn't Match**
+|     e     |     1     |    U+0065 |      0x65 |    0x6500 |	**Didn't Match**
+|     w     |     1     |    U+0077 |      0x77 |    0x7700 |	**Didn't Match**
+|   none    |     1     |    U+000a |      0x0a |    0x0a00 |	**Didn't Match**
+|   none    |     2     |    U+0418 |    0xd098 |    0x1804 |	**Didn't Match**
+|   none    |     2     |    U+043d |    0xd0bd |    0x3d04 |	**Didn't Match**
+|   none    |     2     |    U+0444 |    0xd184 |    0x4404 |	**Didn't Match**
+|   none    |     2     |    U+043e |    0xd0be |    0x3e04 |	**Didn't Match**
+|   none    |     2     |    U+0440 |    0xd180 |    0x4004 |	**Didn't Match**
+|   none    |     2     |    U+043c |    0xd0bc |    0x3c04 |	**Didn't Match**
+|   none    |     2     |    U+0430 |    0xd0b0 |    0x3004 |	**Didn't Match**
+|   none    |     2     |    U+0442 |    0xd182 |    0x4204 |	**Didn't Match**
+|   none    |     2     |    U+0438 |    0xd0b8 |    0x3804 |	**Didn't Match**
+|   none    |     2     |    U+043a |    0xd0ba |    0x3a04 |	**Didn't Match**
+|   none    |     2     |    U+0430 |    0xd0b0 |    0x3004 |	**Didn't Match**
+|   none    |     1     |    U+0009 |      0x09 |    0x0900 |	**Didn't Match**
+|   none    |     1     |    U+0009 |      0x09 |    0x0900 |	**Didn't Match**
+|   none    |     1     |    U+0009 |      0x09 |    0x0900 |	**Didn't Match**
+|   none    |     1     |    U+0009 |      0x09 |    0x0900 |	**Didn't Match**
+|   none    |     1     |    U+0009 |      0x09 |    0x0900 |	**Didn't Match**
+|   none    |     4     |   U+1f622 |0xf09f98a2 |0x3dd822de |	**Didn't Match**
+|   none    |     1     |    U+0009 |      0x09 |    0x0900 |	**Didn't Match**
+|     R     |     1     |    U+0052 |      0x52 |    0x5200 |	**Didn't Match**
+|     u     |     1     |    U+0075 |      0x75 |    0x7500 |	**Didn't Match**
+|     s     |     1     |    U+0073 |      0x73 |    0x7300 |	**Didn't Match**
+|     s     |     1     |    U+0073 |      0x73 |    0x7300 |	**Didn't Match**
+|     i     |     1     |    U+0069 |      0x69 |    0x6900 |	**Didn't Match**
+|     a     |     1     |    U+0061 |      0x61 |    0x6100 |	**Didn't Match**
+|     n     |     1     |    U+006e |      0x6e |    0x6e00 |	**Didn't Match**
+|   none    |     1     |    U+000a |      0x0a |    0x0a00 |	**Didn't Match**
+|   none    |     3     |    U+cef4 |  0xecbbb4 |    0xf4ce |	**Didn't Match**
+|   none    |     3     |    U+d4e8 |  0xed93a8 |    0xe8d4 |	**Didn't Match**
+|   none    |     3     |    U+d130 |  0xed84b0 |    0x30d1 |	**Didn't Match**
+|           |     1     |    U+0020 |      0x20 |    0x2000 |	**Didn't Match**
+|   none    |     3     |    U+acfc |  0xeab3bc |    0xfcac |	**Didn't Match**
+|   none    |     3     |    U+d559 |  0xed9599 |    0x59d5 |	**Didn't Match**
+|   none    |     1     |    U+0009 |      0x09 |    0x0900 |	**Didn't Match**
+|   none    |     1     |    U+0009 |      0x09 |    0x0900 |	**Didn't Match**
+|   none    |     1     |    U+0009 |      0x09 |    0x0900 |	**Didn't Match**
+|   none    |     1     |    U+0009 |      0x09 |    0x0900 |	**Didn't Match**
+|   none    |     1     |    U+0009 |      0x09 |    0x0900 |	**Didn't Match**
+|   none    |     4     |   U+1f61d |0xf09f989d |0x3dd81dde |	**Didn't Match**
+|   none    |     1     |    U+0009 |      0x09 |    0x0900 |	**Didn't Match**
+|     K     |     1     |    U+004b |      0x4b |    0x4b00 |	**Didn't Match**
+|     o     |     1     |    U+006f |      0x6f |    0x6f00 |	**Didn't Match**
+|     r     |     1     |    U+0072 |      0x72 |    0x7200 |	**Didn't Match**
+|     e     |     1     |    U+0065 |      0x65 |    0x6500 |	**Didn't Match**
+|     a     |     1     |    U+0061 |      0x61 |    0x6100 |	**Didn't Match**
+|     n     |     1     |    U+006e |      0x6e |    0x6e00 |	**Didn't Match**
+|   none    |     1     |    U+000a |      0x0a |    0x0a00 |	**Didn't Match**
+|   none    |     3     |    U+30b3 |  0xe382b3 |    0xb330 |	**Didn't Match**
+|   none    |     3     |    U+30f3 |  0xe383b3 |    0xf330 |	**Didn't Match**
+|   none    |     3     |    U+30d4 |  0xe38394 |    0xd430 |	**Didn't Match**
+|   none    |     3     |    U+30e5 |  0xe383a5 |    0xe530 |	**Didn't Match**
+|   none    |     3     |    U+30fc |  0xe383bc |    0xfc30 |	**Didn't Match**
+|   none    |     3     |    U+30bf |  0xe382bf |    0xbf30 |	**Didn't Match**
+|   none    |     3     |    U+30b5 |  0xe382b5 |    0xb530 |	**Didn't Match**
+|   none    |     3     |    U+30a4 |  0xe382a4 |    0xa430 |	**Didn't Match**
+|   none    |     3     |    U+30a8 |  0xe382a8 |    0xa830 |	**Didn't Match**
+|   none    |     3     |    U+30f3 |  0xe383b3 |    0xf330 |	**Didn't Match**
+|   none    |     3     |    U+30b9 |  0xe382b9 |    0xb930 |	**Didn't Match**
+|   none    |     1     |    U+0009 |      0x09 |    0x0900 |	**Didn't Match**
+|   none    |     1     |    U+0009 |      0x09 |    0x0900 |	**Didn't Match**
+|   none    |     4     |   U+1f611 |0xf09f9891 |0x3dd811de |	**Didn't Match**
+|   none    |     1     |    U+0009 |      0x09 |    0x0900 |	**Didn't Match**
+|     J     |     1     |    U+004a |      0x4a |    0x4a00 |	**Didn't Match**
+|     a     |     1     |    U+0061 |      0x61 |    0x6100 |	**Didn't Match**
+|     p     |     1     |    U+0070 |      0x70 |    0x7000 |	**Didn't Match**
+|     a     |     1     |    U+0061 |      0x61 |    0x6100 |	**Didn't Match**
+|     n     |     1     |    U+006e |      0x6e |    0x6e00 |	**Didn't Match**
+|     e     |     1     |    U+0065 |      0x65 |    0x6500 |	**Didn't Match**
+|     s     |     1     |    U+0073 |      0x73 |    0x7300 |	**Didn't Match**
+|     e     |     1     |    U+0065 |      0x65 |    0x6500 |	**Didn't Match**
+|   none    |     1     |    U+000a |      0x0a |    0x0a00 |	**Didn't Match**
+Output written successfully.
+
+
+Your Output:
+	**Didn't Match**
+Case results: 0.0 / 8.0
+Success test results: 0.0 / 8.0
+
+
+Testing Invalid Cases
+(There should be no output)
+Each case is worth 2 points
+./a.out -e UTF-16LE utf-8.txt symbolic-link-2.txt                               -- BAD
+Program returned value [Invalid - Same file with different names]
+./a.out -q utf-16LE utf-8.txt utf-16LE-err.txt                                  -- GOOD: Program exited with status "1"
+./a.out UTF-16LE utf-8.txt utf-16LE-err.txt                                     -- GOOD: Program exited with status "1"
+./a.out -e utf-16LE utf-8.txt utf-16LE-err.txt                                  -- GOOD: Program exited with status "1"
+./a.out -e UTF-16LE utf-8.txt                                                   -- GOOD: Program exited with status "1"
+./a.out -e UTF-16LE                                                             -- GOOD: Program exited with status "1"
+./a.out -e UTF-16LE utf-8-no-bom.txt utf-16LE-err.txt                           -- GOOD: Program exited with status "1"
+Invalid test case results: 12.0 / 14.0
+
+
+Testing Debug Cases
+(These should all return a value)
+ -- Each case is worth 1.5 points
+./a.out -e UTF-16LE utf-8.txt utf-16LE.txt                                      -- BAD
+Error: BAD. 'ubuntu' not included
+Error: BAD. '16' not included
+Error: BAD. '8' not included
+Error: BAD. '16' not included
+Error: BAD. '8' not included
+Error: BAD. '42' not included
+Error: BAD. '39' not included
+Error: BAD. '101' not included
+Correct Output:
+CSE320: Host name: ubuntu
+CSE320: Input: test_cases/input/utf-8.txt, 42, 39, 101 byte(s)
+CSE320: Output: test_cases/output_files/utf-16LE.txt
+CSE320: Input Encoding: UTF-8
+CSE320: Output Encoding: UTF-16LE
+Output written successfully.
+
+Your Output:./a.out -e UTF-16LE utf-8-special.txt utf-16LE-special.txt                      -- BAD
+Error: BAD. 'ubuntu' not included
+Error: BAD. '16' not included
+Error: BAD. '8' not included
+Error: BAD. '16' not included
+Error: BAD. '8' not included
+Error: BAD. '47' not included
+Error: BAD. '39' not included
+Error: BAD. '334' not included
+Correct Output:
+CSE320: Host name: ubuntu
+CSE320: Input: test_cases/input/utf-8-special.txt, 47, 39, 334 byte(s)
+CSE320: Output: test_cases/output_files/utf-16LE-special.txt
+CSE320: Input Encoding: UTF-8
+CSE320: Output Encoding: UTF-16LE
+Output written successfully.
+
+Your Output:Case results: 0.0 / 3.0
+Debug test case results: 0.0 / 3.0
+
+/\/\/\/\/\/\ Total results: 47.0 / 60 /\/\/\/\/\/\
+
+-------------------------------------------------------------
+
+=============================================================
+
+-------------------------------------------------------------
+                        SPARKY TESTING                        
+-------------------------------------------------------------
+Makefile compiles with flags -Wall -Werror (4pts)                     Score: 2 / 2	Makefile compiles with flags
+=-=-=-=-=-=-=-= TESTING UTFCONVERTER.C SOURCE FILE =-=-=-=-=-=-=-=
+
+Testing Valid Cases
+(These should all return a value)
+
+Fixed -- Each case is worth 7.5 points
+./a.out -e UTF-16LE utf-8.txt 8to16LEg.txt                                      -- BAD.
+Unexpected error occured. Should've succeeded
+./a.out -e UTF-16LE utf-8-special.txt 8to16LEsg.txt                             -- BAD.
+Unexpected error occured. Should've succeeded
+Case results: 0.0 / 15.0
+
+Generic -- Each case is worth 1.5 points
+./a.out -e UTF-16BE utf-8.txt 8to16BEg.txt                                      -- BAD.
+Unexpected error occured. Should've succeeded
+./a.out -e UTF-16BE utf-8-special.txt 8to16BEsg.txt                             -- BAD.
+Unexpected error occured. Should've succeeded
+./a.out -e UTF-8 utf-16LE.txt 16LE8g.txt                                        -- BAD.
+Unexpected error occured. Should've succeeded
+./a.out -e UTF-8 utf-16LE-special.txt 16LE8sg.txt                               -- BAD.
+Unexpected error occured. Should've succeeded
+./a.out -e UTF-8 utf-16BE.txt 16BE8g.txt                                        -- BAD.
+Unexpected error occured. Should've succeeded
+./a.out -e UTF-8 utf-16BE-special.txt 16BE8sg.txt                               -- BAD.
+Unexpected error occured. Should've succeeded
+./a.out -e UTF-16BE utf-16LE.txt 16LE16BEg.txt                                  -- BAD.
+Unexpected error occured. Should've succeeded
+./a.out -e UTF-16BE utf-16LE-special.txt 16LE16BEsg.txt                         -- BAD.
+Unexpected error occured. Should've succeeded
+Case results: 0.0 / 12.0
+
+Verbose -- Each case is worth 1.0 points
+./a.out -v -e UTF-16LE utf-8.txt 8to16LEv1.txt                                  -- BAD.
+Unexpected error occured. Should've succeeded
+./a.out -v -e UTF-16LE utf-8-special.txt 8to16LEsv1.txt                         -- BAD.
+Unexpected error occured. Should've succeeded
+./a.out -vv -e UTF-16LE utf-8.txt 8to16LEv2.txt                                 -- BAD.
+Unexpected error occured. Should've succeeded
+./a.out -vv -e UTF-16LE utf-8-special.txt 8to16LEsv2.txt                        -- BAD.
+Unexpected error occured. Should've succeeded
+./a.out -vvv -e UTF-16LE utf-8.txt 8to16LEv3.txt                                -- BAD.
+Unexpected error occured. Should've succeeded
+./a.out -vvv -e UTF-16LE utf-8-special.txt 8to16LEsv3.txt                       -- BAD.
+Unexpected error occured. Should've succeeded
+./a.out -vvvvvv -e UTF-16LE utf-8.txt 8to16LEv4.txt                             -- BAD.
+Unexpected error occured. Should've succeeded
+./a.out -vvvvvv -e UTF-16LE utf-8-special.txt 8to16LEsv4.txt                    -- BAD.
+Unexpected error occured. Should've succeeded
+Case results: 0.0 / 8.0
+Success test results: 0.0 / 8.0
+
+
+Testing Debug Cases
+(These should all return a value)
+ -- Each case is worth 1.5 points
+./a.out -e UTF-16LE utf-8.txt utf-16LE.txt                                      -- BAD.
+Unexpected error occured. Should've succeeded
+./a.out -e UTF-16LE utf-8-special.txt utf-16LE-special.txt                      -- BAD.
+Unexpected error occured. Should've succeeded
+Case results: 0.0 / 3.0
+Debug test case results: 0.0 / 3.0
+
+/\/\/\/\/\/\ Total results: 2.0 / 40 /\/\/\/\/\/\
+
+
+==================================================
+**************************************************
+/\/\/\/\/\/\ TOTOAL SCORE: 49.0 / 100 /\/\/\/\/\/\
+**************************************************
+==================================================
